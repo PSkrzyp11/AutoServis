@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Zresetuj hasło{% endblock %}
+{% block content %}
+<p style="margin:0 0 16px;">Cześć {{ full_name }},</p>
+<p style="margin:0 0 16px;">otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w AutoServis.</p>
+<p style="margin:0 0 24px;">
+  <a href="{{ reset_url }}" style="display:inline-block;padding:12px 24px;background-color:#18181b;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">Ustaw nowe hasło</a>
+</p>
+<p style="margin:0 0 16px;">Link jest ważny przez {{ expires_in_minutes }} minut. Jeśli przycisk nie działa, skopiuj ten adres do przeglądarki:</p>
+<p style="margin:0 0 16px;word-break:break-all;"><a href="{{ reset_url }}" style="color:#2563eb;">{{ reset_url }}</a></p>
+<p style="margin:0;">Jeśli ta prośba nie pochodzi od Ciebie, zignoruj tę wiadomość. Twoje hasło pozostanie bez zmian.</p>
+{% endblock %}

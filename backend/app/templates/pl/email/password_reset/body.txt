@@ -1,0 +1,10 @@
+Cześć {{ full_name }},
+
+otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w AutoServis.
+
+Aby ustawić nowe hasło, otwórz poniższy link. Jest ważny przez {{ expires_in_minutes }} minut:
+{{ reset_url }}
+
+Jeśli ta prośba nie pochodzi od Ciebie, zignoruj tę wiadomość. Twoje hasło pozostanie bez zmian.
+
+Zespół AutoServis

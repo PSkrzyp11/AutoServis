@@ -1,0 +1,97 @@
+from collections.abc import Awaitable, Callable
+from typing import Annotated
+
+import structlog
+from fastapi import Depends, Query, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from app.core.dependencies import RedisDep, SessionDep, SettingsDep, TaskQueueDep
+from app.core.errors import ErrorCode, ForbiddenError, UnauthorizedError
+from app.core.rate_limit import RateLimiter, RateLimitRule
+from app.models.enums import UserRole
+from app.models.user import User
+from app.schemas.pagination import PageParams
+from app.services.auth_service import AuthService
+from app.services.password_reset_service import PasswordResetService
+from app.services.user_service import UserService
+
+DEFAULT_PAGE_LIMIT = 20
+MAX_PAGE_LIMIT = 100
+UNKNOWN_CLIENT_IDENTIFIER = "unknown"
+
+LOGIN_RATE_LIMIT = RateLimitRule(scope="login", limit=10, window_seconds=60)
+REGISTER_RATE_LIMIT = RateLimitRule(scope="register", limit=10, window_seconds=600)
+PASSWORD_RESET_RATE_LIMIT = RateLimitRule(scope="password_reset", limit=5, window_seconds=900)
+
+bearer_scheme = HTTPBearer(
+    auto_error=False,
+    description="Access token returned by the login and refresh endpoints",
+)
+
+
+def get_auth_service(session: SessionDep, settings: SettingsDep) -> AuthService:
+    return AuthService(session, settings)
+
+
+def get_password_reset_service(
+    session: SessionDep,
+    settings: SettingsDep,
+    task_queue: TaskQueueDep,
+) -> PasswordResetService:
+    return PasswordResetService(session, settings, task_queue)
+
+
+def get_user_service(session: SessionDep) -> UserService:
+    return UserService(session)
+
+
+AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
+PasswordResetServiceDep = Annotated[PasswordResetService, Depends(get_password_reset_service)]
+UserServiceDep = Annotated[UserService, Depends(get_user_service)]
+
+
+async def get_current_user(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)],
+    auth_service: AuthServiceDep,
+) -> User:
+    if credentials is None:
+        raise UnauthorizedError(ErrorCode.UNAUTHORIZED, "Authentication required")
+    user = await auth_service.get_user_from_access_token(credentials.credentials)
+    structlog.contextvars.bind_contextvars(user_id=str(user.id))
+    return user
+
+
+CurrentUserDep = Annotated[User, Depends(get_current_user)]
+
+
+def require_roles(*allowed_roles: UserRole) -> Callable[[User], Awaitable[User]]:
+    async def ensure_role(user: CurrentUserDep) -> User:
+        if user.role not in allowed_roles:
+            raise ForbiddenError(ErrorCode.FORBIDDEN, "Insufficient permissions")
+        return user
+
+    return ensure_role
+
+
+AdminUserDep = Annotated[User, Depends(require_roles(UserRole.ADMIN))]
+
+
+def get_page_params(
+    limit: Annotated[
+        int,
+        Query(ge=1, le=MAX_PAGE_LIMIT, description="Maximum number of items to return"),
+    ] = DEFAULT_PAGE_LIMIT,
+    offset: Annotated[int, Query(ge=0, description="Number of items to skip")] = 0,
+) -> PageParams:
+    return PageParams(limit=limit, offset=offset)
+
+
+PageParamsDep = Annotated[PageParams, Depends(get_page_params)]
+
+
+def rate_limited(rule: RateLimitRule) -> Callable[[Request, RedisDep], Awaitable[None]]:
+    async def enforce_rate_limit(request: Request, redis: RedisDep) -> None:
+        identifier = request.client.host if request.client else UNKNOWN_CLIENT_IDENTIFIER
+        await RateLimiter(redis).hit(rule, identifier)
+
+    return enforce_rate_limit
