@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { formatCurrency, formatDate, formatDateTime, formatNumber } from "@/lib/format";
+import {
+  formatCurrency,
+  formatDate,
+  formatDateTime,
+  formatNumber,
+  formatTime,
+  formatWeekday,
+} from "@/lib/format";
 
 const NON_BREAKING_SPACES = /[  ]/g;
 
@@ -23,6 +30,15 @@ describe("format", () => {
 
   it("follows the Polish convention of not grouping four-digit amounts", () => {
     expect(normalizeSpaces(formatCurrency(1234.5))).toBe("1234,50 zł");
+  });
+
+  it("formats ISO weekdays as capitalized Polish names", () => {
+    expect(formatWeekday(1)).toBe("Poniedziałek");
+    expect(formatWeekday(7)).toBe("Niedziela");
+  });
+
+  it("trims seconds from API times", () => {
+    expect(formatTime("08:30:00")).toBe("08:30");
   });
 
   it("formats numbers with Polish separators", () => {

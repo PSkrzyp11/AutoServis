@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAuthStore } from "@/features/auth/auth-store";
-import { apiClient, callApi, callApiWithoutContent } from "@/lib/api/client";
+import { callApi, callApiWithoutContent } from "@/lib/api/call";
+import { apiClient } from "@/lib/api/client";
 import type { User } from "@/lib/api/types";
 
 export const currentUserQueryKey = ["current-user"] as const;

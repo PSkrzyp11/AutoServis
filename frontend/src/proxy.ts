@@ -1,10 +1,19 @@
 import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
-import { type AppPathname, localizePathname, routing } from "@/i18n/routing";
+import { localizePathname, routing, type StaticAppPathname } from "@/i18n/routing";
 import { REDIRECT_QUERY_PARAM, SESSION_HINT_COOKIE } from "@/lib/session";
 
-const PROTECTED_PATHNAMES: readonly AppPathname[] = ["/account", "/admin/users"];
+const PROTECTED_PATHNAMES: readonly StaticAppPathname[] = [
+  "/account",
+  "/vehicles",
+  "/panel/workshop",
+  "/panel/bays",
+  "/panel/services",
+  "/panel/team",
+  "/admin/users",
+  "/admin/workshops",
+];
 
 const handleI18nRouting = createMiddleware(routing);
 

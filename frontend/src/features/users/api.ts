@@ -1,7 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { currentUserQueryKey } from "@/features/auth/api";
-import { apiClient, callApi } from "@/lib/api/client";
+import { callApi } from "@/lib/api/call";
+import { apiClient } from "@/lib/api/client";
 import type { SortOrder, User, UserPage, UserRole, UserSortField } from "@/lib/api/types";
 
 export const ADMIN_USERS_PAGE_SIZE = 20;
