@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import Awaitable, Callable
 from typing import Annotated
 
@@ -10,10 +11,15 @@ from app.core.errors import ErrorCode, ForbiddenError, UnauthorizedError
 from app.core.rate_limit import RateLimiter, RateLimitRule
 from app.models.enums import UserRole
 from app.models.user import User
+from app.models.workshop import Workshop
 from app.schemas.pagination import PageParams
 from app.services.auth_service import AuthService
 from app.services.password_reset_service import PasswordResetService
 from app.services.user_service import UserService
+from app.services.vehicle_service import VehicleService
+from app.services.workshop_resource_service import BayService, ServiceTypeService
+from app.services.workshop_schedule_service import WorkshopScheduleService
+from app.services.workshop_service import WorkshopPermission, WorkshopService
 
 DEFAULT_PAGE_LIMIT = 20
 MAX_PAGE_LIMIT = 100
@@ -45,9 +51,37 @@ def get_user_service(session: SessionDep) -> UserService:
     return UserService(session)
 
 
+def get_workshop_service(session: SessionDep) -> WorkshopService:
+    return WorkshopService(session)
+
+
+def get_workshop_schedule_service(session: SessionDep) -> WorkshopScheduleService:
+    return WorkshopScheduleService(session)
+
+
+def get_bay_service(session: SessionDep) -> BayService:
+    return BayService(session)
+
+
+def get_service_type_service(session: SessionDep) -> ServiceTypeService:
+    return ServiceTypeService(session)
+
+
+def get_vehicle_service(session: SessionDep) -> VehicleService:
+    return VehicleService(session)
+
+
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
 PasswordResetServiceDep = Annotated[PasswordResetService, Depends(get_password_reset_service)]
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
+WorkshopServiceDep = Annotated[WorkshopService, Depends(get_workshop_service)]
+WorkshopScheduleServiceDep = Annotated[
+    WorkshopScheduleService,
+    Depends(get_workshop_schedule_service),
+]
+BayServiceDep = Annotated[BayService, Depends(get_bay_service)]
+ServiceTypeServiceDep = Annotated[ServiceTypeService, Depends(get_service_type_service)]
+VehicleServiceDep = Annotated[VehicleService, Depends(get_vehicle_service)]
 
 
 async def get_current_user(
@@ -74,6 +108,29 @@ def require_roles(*allowed_roles: UserRole) -> Callable[[User], Awaitable[User]]
 
 
 AdminUserDep = Annotated[User, Depends(require_roles(UserRole.ADMIN))]
+
+
+def workshop_with_permission(
+    permission: WorkshopPermission,
+) -> Callable[[uuid.UUID, User, WorkshopService], Awaitable[Workshop]]:
+    async def resolve_workshop(
+        workshop_id: uuid.UUID,
+        user: CurrentUserDep,
+        workshop_service: WorkshopServiceDep,
+    ) -> Workshop:
+        return await workshop_service.get_accessible_workshop(user, workshop_id, permission)
+
+    return resolve_workshop
+
+
+StaffWorkshopDep = Annotated[
+    Workshop,
+    Depends(workshop_with_permission(WorkshopPermission.VIEW)),
+]
+ManagedWorkshopDep = Annotated[
+    Workshop,
+    Depends(workshop_with_permission(WorkshopPermission.MANAGE)),
+]
 
 
 def get_page_params(

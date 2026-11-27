@@ -1,0 +1,159 @@
+{
+  "service_catalog": [
+    { "name": "Wymiana oleju i filtrów", "duration_minutes": 60, "base_price_net": "199.00", "vat_rate": "23" },
+    { "name": "Przegląd okresowy", "duration_minutes": 120, "base_price_net": "349.00", "vat_rate": "23" },
+    { "name": "Diagnostyka komputerowa", "duration_minutes": 45, "base_price_net": "149.00", "vat_rate": "23" },
+    { "name": "Wymiana klocków hamulcowych (jedna oś)", "duration_minutes": 90, "base_price_net": "249.00", "vat_rate": "23" },
+    { "name": "Ustawienie geometrii kół", "duration_minutes": 60, "base_price_net": "179.00", "vat_rate": "23" },
+    { "name": "Wymiana opon (komplet)", "duration_minutes": 45, "base_price_net": "129.00", "vat_rate": "23" },
+    { "name": "Serwis klimatyzacji", "duration_minutes": 60, "base_price_net": "219.00", "vat_rate": "23" }
+  ],
+  "workshops": [
+    {
+      "name": "Auto Serwis Mokotów",
+      "tax_id": "5252389141",
+      "street": "ul. Puławska 145",
+      "postal_code": "02-715",
+      "city": "Warszawa",
+      "phone": "+48 22 123 45 67",
+      "email": "kontakt.mokotow@example.com",
+      "price_adjustment_percent": 0,
+      "opening_hours": [
+        { "weekday": 1, "opens_at": "08:00", "closes_at": "18:00" },
+        { "weekday": 2, "opens_at": "08:00", "closes_at": "18:00" },
+        { "weekday": 3, "opens_at": "08:00", "closes_at": "18:00" },
+        { "weekday": 4, "opens_at": "08:00", "closes_at": "18:00" },
+        { "weekday": 5, "opens_at": "08:00", "closes_at": "18:00" },
+        { "weekday": 6, "opens_at": "09:00", "closes_at": "14:00" }
+      ],
+      "closures": [
+        { "closed_on": "2026-12-24", "reason": "Wigilia" },
+        { "closed_on": "2026-12-25", "reason": "Boże Narodzenie" },
+        { "closed_on": "2026-12-26", "reason": "Drugi dzień świąt" },
+        { "closed_on": "2027-01-01", "reason": "Nowy Rok" },
+        { "closed_on": "2027-01-06", "reason": "Trzech Króli" },
+        { "closed_on": "2027-03-29", "reason": "Poniedziałek Wielkanocny" }
+      ],
+      "bays": [
+        { "name": "Stanowisko 1", "type": "GENERAL" },
+        { "name": "Podnośnik A", "type": "LIFT" },
+        { "name": "Podnośnik B", "type": "LIFT" },
+        { "name": "Stanowisko diagnostyczne", "type": "DIAGNOSTIC" }
+      ],
+      "staff": [
+        { "email": "tomasz.wisniewski@example.com", "full_name": "Tomasz Wiśniewski", "phone": "+48 501 234 567", "role": "MANAGER" },
+        { "email": "marek.kaminski@example.com", "full_name": "Marek Kamiński", "phone": "+48 502 345 678", "role": "MECHANIC" },
+        { "email": "pawel.zielinski@example.com", "full_name": "Paweł Zieliński", "phone": "+48 503 456 789", "role": "MECHANIC" },
+        { "email": "krzysztof.szymanski@example.com", "full_name": "Krzysztof Szymański", "phone": "+48 504 567 890", "role": "MECHANIC" }
+      ]
+    },
+    {
+      "name": "Garaż pod Wawelem",
+      "tax_id": "6793124584",
+      "street": "ul. Zakopiańska 62",
+      "postal_code": "30-418",
+      "city": "Kraków",
+      "phone": "+48 12 345 67 89",
+      "email": "biuro.wawel@example.com",
+      "price_adjustment_percent": -10,
+      "opening_hours": [
+        { "weekday": 1, "opens_at": "07:30", "closes_at": "17:00" },
+        { "weekday": 2, "opens_at": "07:30", "closes_at": "17:00" },
+        { "weekday": 3, "opens_at": "07:30", "closes_at": "17:00" },
+        { "weekday": 4, "opens_at": "07:30", "closes_at": "17:00" },
+        { "weekday": 5, "opens_at": "07:30", "closes_at": "17:00" },
+        { "weekday": 6, "opens_at": "08:00", "closes_at": "13:00" }
+      ],
+      "closures": [
+        { "closed_on": "2026-12-24", "reason": "Wigilia" },
+        { "closed_on": "2026-12-25", "reason": "Boże Narodzenie" },
+        { "closed_on": "2026-12-26", "reason": "Drugi dzień świąt" },
+        { "closed_on": "2026-12-31", "reason": "Inwentaryzacja magazynu" },
+        { "closed_on": "2027-01-01", "reason": "Nowy Rok" },
+        { "closed_on": "2027-01-06", "reason": "Trzech Króli" }
+      ],
+      "bays": [
+        { "name": "Stanowisko 1", "type": "GENERAL" },
+        { "name": "Stanowisko 2", "type": "GENERAL" },
+        { "name": "Podnośnik", "type": "LIFT" },
+        { "name": "Wulkanizacja", "type": "TIRES" }
+      ],
+      "staff": [
+        { "email": "katarzyna.lewandowska@example.com", "full_name": "Katarzyna Lewandowska", "phone": "+48 601 111 222", "role": "MANAGER" },
+        { "email": "michal.wozniak@example.com", "full_name": "Michał Woźniak", "phone": "+48 602 222 333", "role": "MECHANIC" },
+        { "email": "adam.dabrowski@example.com", "full_name": "Adam Dąbrowski", "phone": "+48 603 333 444", "role": "MECHANIC" },
+        { "email": "lukasz.kozlowski@example.com", "full_name": "Łukasz Kozłowski", "phone": "+48 604 444 555", "role": "MECHANIC" }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "email": "magdalena.jankowska@example.com",
+      "full_name": "Magdalena Jankowska",
+      "phone": "+48 691 100 200",
+      "vehicles": [
+        { "make": "Toyota", "model": "Corolla", "production_year": 2019, "plate_number": "WA 58213", "vin": "SB1K93BE10E412873", "mileage_km": 87400, "engine": "1.8 Hybrid" }
+      ]
+    },
+    {
+      "email": "piotr.mazur@example.com",
+      "full_name": "Piotr Mazur",
+      "phone": "+48 692 200 300",
+      "vehicles": [
+        { "make": "Skoda", "model": "Octavia", "production_year": 2017, "plate_number": "WE 3K721", "vin": "TMBJJ7NE8H0218734", "mileage_km": 164200, "engine": "2.0 TDI" },
+        { "make": "Volkswagen", "model": "Golf", "production_year": 2021, "plate_number": "WI 7742F", "vin": "WVWZZZCDZMW083215", "mileage_km": 38900, "engine": "1.5 TSI" }
+      ]
+    },
+    {
+      "email": "agnieszka.krawczyk@example.com",
+      "full_name": "Agnieszka Krawczyk",
+      "phone": "+48 693 300 400",
+      "vehicles": [
+        { "make": "Kia", "model": "Ceed", "production_year": 2020, "plate_number": "WN 4521A", "vin": "U5YH5813GLL052914", "mileage_km": 52300, "engine": "1.4 T-GDI" }
+      ]
+    },
+    {
+      "email": "jakub.piotrowski@example.com",
+      "full_name": "Jakub Piotrowski",
+      "phone": "+48 694 400 500",
+      "vehicles": [
+        { "make": "Ford", "model": "Focus", "production_year": 2015, "plate_number": "WPI 7H21", "vin": "WF05XXGCC5FU36712", "mileage_km": 198500, "engine": "1.6 TDCi" },
+        { "make": "BMW", "model": "320d", "production_year": 2018, "plate_number": "WA 27319", "vin": "WBA8E51060A738264", "mileage_km": 121800, "engine": "2.0d" }
+      ]
+    },
+    {
+      "email": "ewa.grabowska@example.com",
+      "full_name": "Ewa Grabowska",
+      "phone": "+48 695 500 600",
+      "vehicles": [
+        { "make": "Opel", "model": "Astra", "production_year": 2016, "plate_number": "KR 4F21C", "vin": "W0LBF6EC5GG074512", "mileage_km": 143900, "engine": "1.4 Turbo" }
+      ]
+    },
+    {
+      "email": "marcin.pawlowski@example.com",
+      "full_name": "Marcin Pawłowski",
+      "phone": "+48 696 600 700",
+      "vehicles": [
+        { "make": "Renault", "model": "Clio", "production_year": 2022, "plate_number": "KR 91752", "vin": "VF1RJA00X68214573", "mileage_km": 21700, "engine": "1.0 TCe" },
+        { "make": "Dacia", "model": "Duster", "production_year": 2019, "plate_number": "KRA 2M48", "vin": "UU1HSDADG61850723", "mileage_km": 96400, "engine": "1.5 dCi" }
+      ]
+    },
+    {
+      "email": "joanna.michalska@example.com",
+      "full_name": "Joanna Michalska",
+      "phone": "+48 697 700 800",
+      "vehicles": [
+        { "make": "Hyundai", "model": "i30", "production_year": 2018, "plate_number": "KR 5L319", "vin": "TMAH381AAKJ034821", "mileage_km": 88200, "engine": "1.4 MPI" }
+      ]
+    },
+    {
+      "email": "bartosz.krol@example.com",
+      "full_name": "Bartosz Król",
+      "phone": "+48 698 800 900",
+      "vehicles": [
+        { "make": "Audi", "model": "A4", "production_year": 2017, "plate_number": "KWI 51PL", "vin": "WAUZZZF41HA015733", "mileage_km": 156300, "engine": "2.0 TDI" },
+        { "make": "Mazda", "model": "CX-5", "production_year": 2021, "plate_number": "KR 8M402", "vin": "JMZKFGW7A00143825", "mileage_km": 34100, "engine": "2.0 Skyactiv-G" }
+      ]
+    }
+  ]
+}

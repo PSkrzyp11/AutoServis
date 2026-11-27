@@ -8,10 +8,9 @@ from sqlalchemy.orm import InstrumentedAttribute
 
 from app.models.enums import UserRole
 from app.models.user import User
+from app.repositories.query_helpers import LIKE_ESCAPE_CHARACTER, contains_pattern
 from app.schemas.pagination import PageParams, SortOrder
 from app.schemas.user import UserSortField
-
-LIKE_ESCAPE_CHARACTER = "\\"
 
 SORT_COLUMNS: dict[UserSortField, InstrumentedAttribute[object]] = {
     UserSortField.CREATED_AT: User.created_at,
@@ -31,14 +30,6 @@ class UserFilters:
 class UserSorting:
     field: UserSortField = UserSortField.CREATED_AT
     order: SortOrder = SortOrder.DESC
-
-
-def escape_like_pattern(value: str) -> str:
-    return (
-        value.replace(LIKE_ESCAPE_CHARACTER, LIKE_ESCAPE_CHARACTER * 2)
-        .replace("%", f"{LIKE_ESCAPE_CHARACTER}%")
-        .replace("_", f"{LIKE_ESCAPE_CHARACTER}_")
-    )
 
 
 class UserRepository:
@@ -83,7 +74,7 @@ class UserRepository:
         if filters.is_active is not None:
             conditions.append(User.is_active.is_(filters.is_active))
         if filters.search:
-            pattern = f"%{escape_like_pattern(filters.search.strip())}%"
+            pattern = contains_pattern(filters.search)
             conditions.append(
                 or_(
                     User.email.ilike(pattern, escape=LIKE_ESCAPE_CHARACTER),
