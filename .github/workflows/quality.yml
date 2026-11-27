@@ -1,0 +1,32 @@
+name: Repository quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  no-comments:
+    name: No comments policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check that no file contains comments
+        run: python3 scripts/check_no_comments.py
+
+  docker-images:
+    name: Production Docker images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build backend image
+        run: docker build --target production --tag autoservis-backend:ci backend
+
+      - name: Build frontend image
+        run: docker build --target production --tag autoservis-frontend:ci frontend

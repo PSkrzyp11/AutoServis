@@ -1,0 +1,149 @@
+{
+  "metadata": {
+    "title": "AutoServis",
+    "description": "Platforma łącząca kierowców z warsztatami samochodowymi. Rezerwuj terminy, akceptuj kosztorysy i śledź naprawy online."
+  },
+  "common": {
+    "appName": "AutoServis",
+    "loading": "Ładowanie…",
+    "save": "Zapisz zmiany",
+    "saving": "Zapisywanie…",
+    "previousPage": "Poprzednia strona",
+    "nextPage": "Następna strona",
+    "skipToContent": "Przejdź do treści"
+  },
+  "home": {
+    "title": "Serwis samochodowy bez telefonów i czekania",
+    "description": "Zarezerwuj termin w sprawdzonym warsztacie, akceptuj kosztorysy jednym kliknięciem i śledź postęp naprawy na bieżąco.",
+    "login": "Zaloguj się",
+    "register": "Załóż konto"
+  },
+  "navigation": {
+    "label": "Nawigacja główna",
+    "account": "Moje konto",
+    "users": "Użytkownicy",
+    "logout": "Wyloguj się"
+  },
+  "auth": {
+    "fields": {
+      "email": "Adres e-mail",
+      "password": "Hasło",
+      "newPassword": "Nowe hasło",
+      "confirmPassword": "Powtórz hasło",
+      "fullName": "Imię i nazwisko",
+      "phone": "Telefon (opcjonalnie)"
+    },
+    "login": {
+      "title": "Zaloguj się",
+      "description": "Zaloguj się, aby zarządzać swoimi pojazdami i wizytami w warsztacie.",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie…",
+      "forgotPassword": "Nie pamiętasz hasła?",
+      "noAccount": "Nie masz jeszcze konta?",
+      "registerLink": "Zarejestruj się"
+    },
+    "register": {
+      "title": "Załóż konto",
+      "description": "Konto pozwoli Ci rezerwować wizyty i śledzić naprawy Twoich samochodów.",
+      "submit": "Załóż konto",
+      "submitting": "Zakładanie konta…",
+      "hasAccount": "Masz już konto?",
+      "loginLink": "Zaloguj się"
+    },
+    "forgotPassword": {
+      "title": "Nie pamiętasz hasła?",
+      "description": "Podaj adres e-mail powiązany z kontem. Wyślemy na niego link do ustawienia nowego hasła.",
+      "submit": "Wyślij link",
+      "submitting": "Wysyłanie…",
+      "success": "Jeśli konto o tym adresie istnieje, wysłaliśmy na nie wiadomość z linkiem do zmiany hasła.",
+      "backToLogin": "Wróć do logowania"
+    },
+    "resetPassword": {
+      "title": "Ustaw nowe hasło",
+      "description": "Wpisz nowe hasło do swojego konta. Po zmianie zostaniesz wylogowany ze wszystkich urządzeń.",
+      "submit": "Zmień hasło",
+      "submitting": "Zmienianie hasła…",
+      "success": "Hasło zostało zmienione. Możesz się teraz zalogować.",
+      "missingToken": "Link do zmiany hasła jest niepełny. Poproś o nowy link.",
+      "requestNewLink": "Poproś o nowy link",
+      "goToLogin": "Przejdź do logowania"
+    }
+  },
+  "account": {
+    "title": "Moje konto",
+    "description": "Sprawdź i zaktualizuj swoje dane kontaktowe.",
+    "email": "Adres e-mail",
+    "role": "Rola",
+    "memberSince": "Konto założone",
+    "editTitle": "Dane kontaktowe",
+    "saved": "Zmiany zostały zapisane."
+  },
+  "adminUsers": {
+    "title": "Użytkownicy",
+    "description": "Zarządzaj kontami i rolami użytkowników platformy.",
+    "searchLabel": "Szukaj użytkownika",
+    "searchPlaceholder": "E-mail lub imię i nazwisko",
+    "searchSubmit": "Szukaj",
+    "roleFilter": "Rola",
+    "allRoles": "Wszystkie role",
+    "statusFilter": "Status",
+    "allStatuses": "Wszystkie statusy",
+    "tableCaption": "Lista użytkowników platformy",
+    "columns": {
+      "fullName": "Imię i nazwisko",
+      "email": "E-mail",
+      "role": "Rola",
+      "status": "Status",
+      "createdAt": "Data rejestracji",
+      "actions": "Akcje"
+    },
+    "active": "Aktywne",
+    "inactive": "Nieaktywne",
+    "activate": "Aktywuj",
+    "deactivate": "Dezaktywuj",
+    "changeRoleLabel": "Rola użytkownika {name}",
+    "currentUser": "To Ty",
+    "empty": "Brak użytkowników spełniających kryteria.",
+    "summary": "Wyniki {from}–{to} z {total}",
+    "updated": "Zapisano zmiany użytkownika {name}."
+  },
+  "roles": {
+    "CLIENT": "Klient",
+    "MECHANIC": "Mechanik",
+    "MANAGER": "Kierownik",
+    "ADMIN": "Administrator"
+  },
+  "validation": {
+    "required": "To pole jest wymagane.",
+    "invalidEmail": "Podaj poprawny adres e-mail.",
+    "passwordTooShort": "Hasło musi mieć co najmniej {min, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
+    "passwordTooLong": "Hasło może mieć najwyżej {max, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
+    "passwordsMismatch": "Hasła nie są takie same.",
+    "fullNameTooShort": "Imię i nazwisko musi mieć co najmniej {min, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
+    "fullNameTooLong": "Imię i nazwisko może mieć najwyżej {max, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
+    "invalidPhone": "Podaj poprawny numer telefonu, np. +48 600 100 200."
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Formularz zawiera błędy. Popraw zaznaczone pola.",
+    "UNAUTHORIZED": "Musisz się zalogować, aby kontynuować.",
+    "INVALID_CREDENTIALS": "Nieprawidłowy adres e-mail lub hasło.",
+    "INVALID_TOKEN": "Link lub sesja są nieprawidłowe albo wygasły.",
+    "TOKEN_EXPIRED": "Sesja wygasła. Zaloguj się ponownie.",
+    "FORBIDDEN": "Nie masz uprawnień do wykonania tej operacji.",
+    "USER_INACTIVE": "Konto jest nieaktywne. Skontaktuj się z administratorem.",
+    "EMAIL_ALREADY_REGISTERED": "Konto z tym adresem e-mail już istnieje.",
+    "SELF_MODIFICATION_FORBIDDEN": "Nie możesz zmienić roli ani statusu własnego konta.",
+    "NOT_FOUND": "Nie znaleziono szukanego zasobu.",
+    "METHOD_NOT_ALLOWED": "Ta operacja nie jest obsługiwana.",
+    "RATE_LIMITED": "Zbyt wiele prób. Odczekaj chwilę i spróbuj ponownie.",
+    "HTTP_ERROR": "Serwer nie mógł obsłużyć żądania.",
+    "INTERNAL_ERROR": "Wystąpił błąd serwera. Spróbuj ponownie później.",
+    "NETWORK_ERROR": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
+    "UNKNOWN_ERROR": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "notFound": {
+    "title": "Nie znaleziono strony",
+    "description": "Strona, której szukasz, nie istnieje lub została przeniesiona.",
+    "backHome": "Wróć na stronę główną"
+  }
+}
