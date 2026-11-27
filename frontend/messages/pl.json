@@ -10,19 +10,218 @@
     "saving": "Zapisywanie…",
     "previousPage": "Poprzednia strona",
     "nextPage": "Następna strona",
-    "skipToContent": "Przejdź do treści"
+    "pagination": "Nawigacja między stronami wyników",
+    "skipToContent": "Przejdź do treści",
+    "add": "Dodaj",
+    "edit": "Edytuj",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "confirmDelete": "Tak, usuń",
+    "active": "Aktywne",
+    "inactive": "Nieaktywne",
+    "activate": "Aktywuj",
+    "deactivate": "Dezaktywuj",
+    "notProvided": "Nie podano",
+    "summary": "Wyniki {from}–{to} z {total}",
+    "durationMinutes": "{minutes} min",
+    "durationHours": "{hours} godz.{minutes, plural, =0 {} other { # min}}"
   },
   "home": {
     "title": "Serwis samochodowy bez telefonów i czekania",
     "description": "Zarezerwuj termin w sprawdzonym warsztacie, akceptuj kosztorysy jednym kliknięciem i śledź postęp naprawy na bieżąco.",
+    "findWorkshop": "Znajdź warsztat",
     "login": "Zaloguj się",
     "register": "Załóż konto"
   },
   "navigation": {
     "label": "Nawigacja główna",
     "account": "Moje konto",
+    "vehicles": "Moje pojazdy",
+    "workshopPanel": "Panel warsztatu",
     "users": "Użytkownicy",
+    "adminWorkshops": "Warsztaty",
+    "findWorkshop": "Znajdź warsztat",
+    "login": "Zaloguj się",
+    "register": "Załóż konto",
     "logout": "Wyloguj się"
+  },
+  "workshopSearch": {
+    "title": "Znajdź warsztat",
+    "description": "Sprawdź godziny otwarcia, ceny usług i dane kontaktowe warsztatów w Twojej okolicy.",
+    "cityLabel": "Miasto",
+    "allCities": "Wszystkie miasta",
+    "nameLabel": "Nazwa warsztatu",
+    "namePlaceholder": "np. Auto Serwis",
+    "submit": "Szukaj",
+    "resultsCount": "{total, plural, =0 {Nie znaleźliśmy warsztatów} one {Znaleźliśmy # warsztat} few {Znaleźliśmy # warsztaty} many {Znaleźliśmy # warsztatów} other {Znaleźliśmy # warsztatu}}",
+    "empty": "Zmień miasto albo nazwę i spróbuj ponownie.",
+    "showDetails": "Szczegóły i cennik warsztatu {name}",
+    "detailsLink": "Szczegóły i cennik"
+  },
+  "workshopDetail": {
+    "contact": "Kontakt",
+    "address": "Adres",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "openingHours": "Godziny otwarcia",
+    "weekday": "Dzień",
+    "hours": "Godziny",
+    "closed": "Nieczynne",
+    "upcomingClosures": "Najbliższe dni wolne",
+    "noClosures": "Brak zaplanowanych dni wolnych.",
+    "services": "Usługi i ceny",
+    "serviceName": "Usługa",
+    "duration": "Czas",
+    "priceGross": "Cena brutto",
+    "priceNote": "Ceny orientacyjne. Ostateczny koszt warsztat ustala w kosztorysie po diagnozie.",
+    "noServices": "Warsztat nie opublikował jeszcze cennika.",
+    "backToSearch": "Wróć do wyszukiwarki"
+  },
+  "vehicles": {
+    "title": "Moje pojazdy",
+    "description": "Dodaj samochody, którymi przyjeżdżasz do warsztatu. Przyspieszy to rezerwację wizyty.",
+    "add": "Dodaj pojazd",
+    "formTitleAdd": "Nowy pojazd",
+    "formTitleEdit": "Edytuj pojazd",
+    "empty": "Nie masz jeszcze żadnych pojazdów.",
+    "saved": "Pojazd został zapisany.",
+    "deleted": "Pojazd został usunięty.",
+    "deleteQuestion": "Usunąć pojazd {name}?",
+    "vinHint": "17 znaków. Znajdziesz go w dowodzie rejestracyjnym w polu E.",
+    "mileageValue": "{mileage} km",
+    "listLabel": "Lista pojazdów",
+    "details": {
+      "plateNumber": "Numer rejestracyjny",
+      "vin": "VIN",
+      "mileage": "Przebieg",
+      "engine": "Silnik"
+    },
+    "fields": {
+      "make": "Marka",
+      "model": "Model",
+      "productionYear": "Rok produkcji",
+      "plateNumber": "Numer rejestracyjny",
+      "vin": "VIN (opcjonalnie)",
+      "mileage": "Przebieg w km (opcjonalnie)",
+      "engine": "Silnik (opcjonalnie)"
+    }
+  },
+  "workshopFields": {
+    "name": "Nazwa warsztatu",
+    "taxId": "NIP",
+    "street": "Ulica i numer",
+    "postalCode": "Kod pocztowy",
+    "city": "Miasto",
+    "phone": "Telefon",
+    "email": "E-mail"
+  },
+  "panel": {
+    "title": "Panel warsztatu",
+    "noWorkshops": "Nie jesteś przypisany do żadnego warsztatu. Skontaktuj się z administratorem.",
+    "workshopSwitcher": "Warsztat",
+    "sectionsLabel": "Sekcje panelu warsztatu",
+    "readOnly": "Masz dostęp tylko do odczytu. Zmiany wprowadza kierownik warsztatu.",
+    "tabs": {
+      "workshop": "Dane i godziny",
+      "bays": "Stanowiska",
+      "services": "Usługi",
+      "team": "Zespół"
+    },
+    "details": {
+      "title": "Dane warsztatu",
+      "saved": "Dane warsztatu zostały zapisane."
+    },
+    "hours": {
+      "title": "Godziny otwarcia",
+      "description": "Godziny w czasie lokalnym warsztatu. Odznacz dzień, w którym warsztat jest nieczynny.",
+      "open": "Otwarte w dniu: {weekday}",
+      "opensAt": "Otwarcie: {weekday}",
+      "closesAt": "Zamknięcie: {weekday}",
+      "saved": "Godziny otwarcia zostały zapisane.",
+      "invalidRange": "{weekday}: godzina zamknięcia musi być późniejsza niż otwarcia."
+    },
+    "closures": {
+      "title": "Dni wolne",
+      "description": "W te dni nie będzie można zarezerwować wizyty.",
+      "date": "Data",
+      "reason": "Powód (opcjonalnie)",
+      "add": "Dodaj dzień wolny",
+      "empty": "Brak zaplanowanych dni wolnych.",
+      "deleteLabel": "Usuń dzień wolny {date}"
+    },
+    "bays": {
+      "title": "Stanowiska",
+      "description": "Miejsca w warsztacie, na które klienci rezerwują wizyty.",
+      "name": "Nazwa",
+      "type": "Typ",
+      "status": "Status",
+      "actions": "Akcje",
+      "add": "Dodaj stanowisko",
+      "empty": "Warsztat nie ma jeszcze stanowisk.",
+      "saved": "Stanowisko zostało zapisane."
+    },
+    "services": {
+      "title": "Usługi",
+      "description": "Cennik widoczny publicznie na stronie warsztatu.",
+      "name": "Nazwa usługi",
+      "duration": "Czas w minutach",
+      "durationHint": "Wielokrotność 15 minut, od 15 do 480.",
+      "priceNet": "Cena netto w zł",
+      "vatRate": "Stawka VAT",
+      "priceGross": "Cena brutto",
+      "status": "Status",
+      "actions": "Akcje",
+      "add": "Dodaj usługę",
+      "empty": "Cennik jest pusty.",
+      "saved": "Usługa została zapisana.",
+      "vatOption": "{rate}%"
+    },
+    "team": {
+      "title": "Zespół",
+      "description": "Pracownicy przypisani do warsztatu przez administratora.",
+      "empty": "Brak przypisanych pracowników."
+    }
+  },
+  "adminWorkshops": {
+    "title": "Warsztaty",
+    "description": "Dodawaj warsztaty, zmieniaj ich status i przypisuj pracowników.",
+    "add": "Dodaj warsztat",
+    "formTitle": "Nowy warsztat",
+    "created": "Warsztat {name} został dodany.",
+    "updated": "Zapisano zmiany warsztatu {name}.",
+    "searchLabel": "Szukaj warsztatu",
+    "searchPlaceholder": "Nazwa warsztatu",
+    "searchSubmit": "Szukaj",
+    "statusFilter": "Status",
+    "allStatuses": "Wszystkie statusy",
+    "tableCaption": "Lista warsztatów",
+    "empty": "Brak warsztatów spełniających kryteria.",
+    "columns": {
+      "name": "Nazwa",
+      "city": "Miasto",
+      "taxId": "NIP",
+      "status": "Status",
+      "actions": "Akcje"
+    },
+    "showStaff": "Pracownicy",
+    "hideStaff": "Ukryj pracowników",
+    "members": {
+      "title": "Pracownicy: {name}",
+      "empty": "Brak przypisanych pracowników.",
+      "candidateLabel": "Pracownik do przypisania",
+      "choose": "Wybierz osobę",
+      "assign": "Przypisz",
+      "remove": "Usuń z warsztatu",
+      "removeLabel": "Usuń {name} z warsztatu",
+      "noCandidates": "Brak wolnych mechaników i kierowników. Najpierw nadaj użytkownikowi odpowiednią rolę w zakładce Użytkownicy.",
+      "candidateOption": "{name} ({role})"
+    }
+  },
+  "bayTypes": {
+    "GENERAL": "Ogólne",
+    "LIFT": "Podnośnik",
+    "DIAGNOSTIC": "Diagnostyka",
+    "TIRES": "Wulkanizacja"
   },
   "auth": {
     "fields": {
@@ -121,7 +320,16 @@
     "passwordsMismatch": "Hasła nie są takie same.",
     "fullNameTooShort": "Imię i nazwisko musi mieć co najmniej {min, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
     "fullNameTooLong": "Imię i nazwisko może mieć najwyżej {max, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
-    "invalidPhone": "Podaj poprawny numer telefonu, np. +48 600 100 200."
+    "invalidPhone": "Podaj poprawny numer telefonu, np. +48 600 100 200.",
+    "textTooLong": "Tekst może mieć najwyżej {max, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
+    "invalidVin": "VIN musi mieć 17 znaków i nie może zawierać liter I, O ani Q.",
+    "invalidPlate": "Podaj poprawny numer rejestracyjny, np. WA 12345.",
+    "invalidYear": "Podaj rok produkcji z zakresu {min}–{max}.",
+    "invalidMileage": "Podaj przebieg jako liczbę kilometrów.",
+    "invalidTaxId": "Podaj poprawny NIP (10 cyfr).",
+    "invalidPostalCode": "Podaj kod pocztowy w formacie 00-000.",
+    "invalidPrice": "Podaj cenę, np. 149,99.",
+    "invalidDuration": "Podaj czas w minutach: wielokrotność 15, od 15 do 480."
   },
   "errors": {
     "VALIDATION_ERROR": "Formularz zawiera błędy. Popraw zaznaczone pola.",

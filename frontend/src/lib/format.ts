@@ -26,6 +26,25 @@ const currencyFormatter = new Intl.NumberFormat(APP_FORMAT_LOCALE, {
 
 const numberFormatter = new Intl.NumberFormat(APP_FORMAT_LOCALE);
 
+const weekdayFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
+  weekday: "long",
+  timeZone: "UTC",
+});
+
+const REFERENCE_MONDAY_UTC = Date.UTC(2024, 0, 1);
+const MILLISECONDS_PER_DAY = 86_400_000;
+const TIME_PREFIX_LENGTH = 5;
+
+export function formatWeekday(isoWeekday: number): string {
+  const date = new Date(REFERENCE_MONDAY_UTC + (isoWeekday - 1) * MILLISECONDS_PER_DAY);
+  const name = weekdayFormatter.format(date);
+  return name.charAt(0).toLocaleUpperCase(APP_FORMAT_LOCALE) + name.slice(1);
+}
+
+export function formatTime(value: string): string {
+  return value.slice(0, TIME_PREFIX_LENGTH);
+}
+
 function toDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value);
 }

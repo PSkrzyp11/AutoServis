@@ -1,7 +1,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type StatusMessageProps = {
-  tone: "error" | "success";
+  tone: "error" | "success" | "info";
   message: string;
 };
 

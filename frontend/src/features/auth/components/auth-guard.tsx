@@ -17,7 +17,7 @@ const SESSION_ERROR_STATUSES = [401, 403];
 
 type AuthGuardProps = {
   children: ReactNode;
-  requiredRole?: UserRole;
+  allowedRoles?: readonly UserRole[];
 };
 
 function buildLoginUrl(returnPath: string): string {
@@ -26,7 +26,7 @@ function buildLoginUrl(returnPath: string): string {
   return `${loginPath}?${query.toString()}`;
 }
 
-export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
+export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
   const t = useTranslations();
   const errorMessage = useApiErrorMessage();
   const nextRouter = useNextRouter();
@@ -52,7 +52,7 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
     return <StatusMessage tone="error" message={errorMessage(currentUser.error)} />;
   }
 
-  if (requiredRole && currentUser.data.role !== requiredRole) {
+  if (allowedRoles && !allowedRoles.includes(currentUser.data.role)) {
     return <StatusMessage tone="error" message={t("errors.FORBIDDEN")} />;
   }
 

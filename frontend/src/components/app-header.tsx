@@ -7,24 +7,41 @@ import { buttonVariants } from "@/components/ui/button";
 import { useCurrentUser } from "@/features/auth/api";
 import { LogoutButton } from "@/features/auth/components/logout-button";
 import { Link, usePathname } from "@/i18n/navigation";
-import type { AppPathname } from "@/i18n/routing";
+import type { StaticAppPathname } from "@/i18n/routing";
+import type { UserRole } from "@/lib/api/types";
 
 type NavigationItem = {
-  href: AppPathname;
-  labelKey: "account" | "users";
-  adminOnly: boolean;
+  href: StaticAppPathname;
+  labelKey: "account" | "vehicles" | "workshopPanel" | "users" | "adminWorkshops";
+  roles: readonly UserRole[] | null;
+  activePrefix: string;
 };
 
 const NAVIGATION_ITEMS: readonly NavigationItem[] = [
-  { href: "/account", labelKey: "account", adminOnly: false },
-  { href: "/admin/users", labelKey: "users", adminOnly: true },
+  { href: "/vehicles", labelKey: "vehicles", roles: null, activePrefix: "/vehicles" },
+  {
+    href: "/panel/workshop",
+    labelKey: "workshopPanel",
+    roles: ["MANAGER", "MECHANIC"],
+    activePrefix: "/panel",
+  },
+  {
+    href: "/admin/workshops",
+    labelKey: "adminWorkshops",
+    roles: ["ADMIN"],
+    activePrefix: "/admin/workshops",
+  },
+  { href: "/admin/users", labelKey: "users", roles: ["ADMIN"], activePrefix: "/admin/users" },
+  { href: "/account", labelKey: "account", roles: null, activePrefix: "/account" },
 ];
 
 export function AppHeader() {
   const t = useTranslations();
   const pathname = usePathname();
   const { data: user } = useCurrentUser();
-  const visibleItems = NAVIGATION_ITEMS.filter((item) => !item.adminOnly || user?.role === "ADMIN");
+  const visibleItems = NAVIGATION_ITEMS.filter(
+    (item) => item.roles === null || (user !== undefined && item.roles.includes(user.role)),
+  );
 
   return (
     <header className="border-b">
@@ -35,7 +52,7 @@ export function AppHeader() {
         </Link>
         <nav aria-label={t("navigation.label")} className="flex flex-wrap items-center gap-1">
           {visibleItems.map((item) => {
-            const isCurrent = pathname === item.href;
+            const isCurrent = pathname.startsWith(item.activePrefix);
             return (
               <Link
                 key={item.href}
