@@ -4,7 +4,7 @@ AutoServis is a web platform that connects car owners with car repair workshops.
 
 The user interface is in Polish because the target users are Polish clients and workshops. Everything aimed at developers (code, API, documentation, commits) is in English.
 
-> Status: **Stage 1 of 8** — monorepo foundation, infrastructure, internationalization and authentication with role-based access control.
+> Status: **Stage 2 of 8** — workshops, vehicles, service bays and demo data. The backend is done, the frontend screens are in progress.
 
 ## Tech stack
 
@@ -46,6 +46,23 @@ Create an administrator account:
 ```bash
 docker compose exec backend python -m app.cli create-admin --email admin@autoservis.pl --full-name "Administrator"
 ```
+
+Load demo data (two workshops in Warsaw and Kraków, their staff, clients and vehicles):
+
+```bash
+docker compose exec backend python -m app.cli seed-demo
+```
+
+The command is idempotent and refuses to run when `APP_ENV=production`. All demo accounts use the password from `DEMO_USER_PASSWORD` in `.env`, for example:
+
+| Role | Email |
+| --- | --- |
+| Manager (Warsaw) | `tomasz.wisniewski@example.com` |
+| Mechanic (Warsaw) | `marek.kaminski@example.com` |
+| Manager (Kraków) | `katarzyna.lewandowska@example.com` |
+| Client | `magdalena.jankowska@example.com` |
+
+Demo content lives in `backend/app/seed/data/pl/demo.json` and is validated with the same schemas as the API.
 
 ## Development commands
 
@@ -133,6 +150,14 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 - Passwords are hashed with Argon2id. Sign in, registration and password reset are rate limited in Redis.
 - Next.js rewrites `/api/*` to the backend, so the browser talks to a single origin and no CORS configuration is needed.
 - Roles: `CLIENT`, `MECHANIC`, `MANAGER`, `ADMIN`. Endpoints declare required roles through FastAPI dependencies.
+- Workshop data is scoped by membership: mechanics and managers only reach workshops they are assigned to, managers can change them, administrators can access all of them.
+
+### Domain rules
+
+- Money is stored as `NUMERIC(12,2)` and handled with `Decimal`. Prices are kept net with a VAT rate (0, 5, 8 or 23 percent) and serialized as strings with two decimal places.
+- Opening hours are stored as local wall-clock times in the workshop time zone (`Europe/Warsaw`), with ISO weekdays where 1 is Monday.
+- VINs and plate numbers are normalized to upper case without spaces. A VIN is unique among vehicles that are not deleted, so a sold car can be added to a new account.
+- Vehicles are soft deleted to keep their service history.
 
 ### Internationalization
 
@@ -152,7 +177,7 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 ## Roadmap
 
 1. ✅ Monorepo foundation, Docker Compose, configuration, health checks, CI, i18n, authentication and RBAC
-2. Workshops, vehicles, service bays and demo seed data
+2. 🚧 Workshops, vehicles, service bays and demo seed data (backend done)
 3. Bookings and calendar with database-level double booking protection
 4. Repair orders, state machine, Kanban board, WebSockets, notifications
 5. Cost estimates, inventory, chat with photo attachments

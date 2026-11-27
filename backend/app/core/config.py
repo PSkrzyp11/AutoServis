@@ -53,6 +53,8 @@ class Settings(BaseSettings):
 
     sentry_dsn: str | None = None
 
+    demo_user_password: SecretStr | None = None
+
     @field_validator("jwt_secret_key")
     @classmethod
     def validate_jwt_secret_length(cls, value: SecretStr) -> SecretStr:

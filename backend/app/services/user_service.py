@@ -7,10 +7,11 @@ from app.core.errors import ConflictError, ErrorCode, NotFoundError
 from app.core.logging import get_logger
 from app.core.security import hash_password
 from app.core.time import utc_now
-from app.models.enums import UserRole
+from app.models.enums import STAFF_ROLES, UserRole
 from app.models.user import User
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.repositories.user_repository import UserFilters, UserRepository, UserSorting
+from app.repositories.workshop_repository import WorkshopRepository
 from app.schemas.pagination import PageParams
 from app.schemas.user import AdminUserUpdate, UserProfileUpdate
 
@@ -22,6 +23,7 @@ class UserService:
         self._session = session
         self._users = UserRepository(session)
         self._refresh_tokens = RefreshTokenRepository(session)
+        self._workshops = WorkshopRepository(session)
 
     async def get_user(self, user_id: uuid.UUID) -> User:
         user = await self._users.get_by_id(user_id)
@@ -61,6 +63,8 @@ class UserService:
         user = await self.get_user(user_id)
         if data.role is not None:
             user.role = data.role
+            if data.role not in STAFF_ROLES:
+                await self._workshops.remove_all_memberships(user.id)
         if data.is_active is not None:
             user.is_active = data.is_active
             if not data.is_active:

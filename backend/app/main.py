@@ -23,6 +23,11 @@ API_DESCRIPTION = (
 OPENAPI_TAGS = [
     {"name": "auth", "description": "Registration, sign in, session refresh and password reset"},
     {"name": "users", "description": "Operations on the currently signed in user"},
+    {
+        "name": "workshops",
+        "description": "Public workshop search and workshop management for staff",
+    },
+    {"name": "vehicles", "description": "Vehicles owned by the signed in user"},
     {"name": "admin", "description": "Platform administration, available to ADMIN only"},
     {"name": "health", "description": "Liveness and readiness probes"},
 ]

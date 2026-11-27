@@ -18,6 +18,7 @@ x-backend-environment: &backend-environment
   SMTP_HOST: mailpit
   SMTP_PORT: "1025"
   SENTRY_DSN: ${SENTRY_DSN:-}
+  DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-}
   FORWARDED_ALLOW_IPS: "*"
   WATCHFILES_FORCE_POLLING: "true"
 
