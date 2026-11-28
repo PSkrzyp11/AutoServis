@@ -25,6 +25,13 @@ export type BayType = Schemas["BayType"];
 export type ServiceType = Schemas["ServiceTypeRead"];
 export type Vehicle = Schemas["VehicleRead"];
 export type VehiclePage = Schemas["Page_VehicleRead_"];
+export type Appointment = Schemas["AppointmentRead"];
+export type StaffAppointment = Schemas["StaffAppointmentRead"];
+export type AppointmentPage = Schemas["Page_AppointmentRead_"];
+export type AppointmentScope = Schemas["AppointmentScope"];
+export type AppointmentStatus = Schemas["AppointmentStatus"];
+export type DayAvailability = Schemas["DayAvailability"];
+export type AvailableSlot = Schemas["AvailableSlotRead"];
 
 export const USER_ROLES = [
   "CLIENT",

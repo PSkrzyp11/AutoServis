@@ -12,8 +12,11 @@ export const routing = defineRouting({
     "/reset-password": { pl: "/nowe-haslo" },
     "/workshops": { pl: "/warsztaty" },
     "/workshops/[slug]": { pl: "/warsztaty/[slug]" },
+    "/workshops/[slug]/booking": { pl: "/warsztaty/[slug]/rezerwacja" },
     "/account": { pl: "/konto" },
     "/vehicles": { pl: "/pojazdy" },
+    "/appointments": { pl: "/wizyty" },
+    "/panel/calendar": { pl: "/panel/kalendarz" },
     "/panel/workshop": { pl: "/panel/warsztat" },
     "/panel/bays": { pl: "/panel/stanowiska" },
     "/panel/services": { pl: "/panel/uslugi" },
@@ -29,9 +32,28 @@ export type StaticAppPathname = Exclude<AppPathname, `${string}[${string}]${stri
 
 export const APP_TIME_ZONE = "Europe/Warsaw";
 
-export function localizePathname(pathname: StaticAppPathname, locale: AppLocale): string {
+const DYNAMIC_SEGMENT_PATTERN = /^\[[^\]]+\]$/;
+const REGEXP_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
+
+function localizedTemplate(pathname: AppPathname, locale: AppLocale): string {
   const localized = routing.pathnames[pathname];
   const path = typeof localized === "string" ? localized : localized[locale];
   const isDefaultLocale = locale === routing.defaultLocale;
   return isDefaultLocale ? path : `/${locale}${path === "/" ? "" : path}`;
+}
+
+export function localizePathname(pathname: StaticAppPathname, locale: AppLocale): string {
+  return localizedTemplate(pathname, locale);
+}
+
+export function localizedPathnamePattern(pathname: AppPathname, locale: AppLocale): RegExp {
+  const source = localizedTemplate(pathname, locale)
+    .split("/")
+    .map((segment) =>
+      DYNAMIC_SEGMENT_PATTERN.test(segment)
+        ? "[^/]+"
+        : segment.replace(REGEXP_SPECIAL_CHARACTERS, "\\$&"),
+    )
+    .join("/");
+  return new RegExp(`^${source}(?:/.*)?$`);
 }

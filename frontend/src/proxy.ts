@@ -1,12 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
-import { localizePathname, routing, type StaticAppPathname } from "@/i18n/routing";
+import {
+  type AppPathname,
+  localizedPathnamePattern,
+  localizePathname,
+  routing,
+} from "@/i18n/routing";
 import { REDIRECT_QUERY_PARAM, SESSION_HINT_COOKIE } from "@/lib/session";
 
-const PROTECTED_PATHNAMES: readonly StaticAppPathname[] = [
+const PROTECTED_PATHNAMES: readonly AppPathname[] = [
   "/account",
   "/vehicles",
+  "/appointments",
+  "/workshops/[slug]/booking",
+  "/panel/calendar",
   "/panel/workshop",
   "/panel/bays",
   "/panel/services",
@@ -15,15 +23,14 @@ const PROTECTED_PATHNAMES: readonly StaticAppPathname[] = [
   "/admin/workshops",
 ];
 
+const PROTECTED_PATTERNS: readonly RegExp[] = routing.locales.flatMap((locale) =>
+  PROTECTED_PATHNAMES.map((pathname) => localizedPathnamePattern(pathname, locale)),
+);
+
 const handleI18nRouting = createMiddleware(routing);
 
 function isProtectedPath(pathname: string): boolean {
-  return routing.locales.some((locale) =>
-    PROTECTED_PATHNAMES.some((protectedPathname) => {
-      const localizedPath = localizePathname(protectedPathname, locale);
-      return pathname === localizedPath || pathname.startsWith(`${localizedPath}/`);
-    }),
-  );
+  return PROTECTED_PATTERNS.some((pattern) => pattern.test(pathname));
 }
 
 export default function proxy(request: NextRequest): NextResponse {

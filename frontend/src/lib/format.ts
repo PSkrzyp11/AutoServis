@@ -31,6 +31,31 @@ const weekdayFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
   timeZone: "UTC",
 });
 
+const timeOfDayFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: APP_TIME_ZONE,
+});
+
+const shortWeekdayFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
+  weekday: "short",
+  timeZone: "UTC",
+});
+
+const dayMonthFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
+  day: "numeric",
+  month: "short",
+  timeZone: "UTC",
+});
+
+const longDayFormatter = new Intl.DateTimeFormat(APP_FORMAT_LOCALE, {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 const REFERENCE_MONDAY_UTC = Date.UTC(2024, 0, 1);
 const MILLISECONDS_PER_DAY = 86_400_000;
 const TIME_PREFIX_LENGTH = 5;
@@ -43,6 +68,22 @@ export function formatWeekday(isoWeekday: number): string {
 
 export function formatTime(value: string): string {
   return value.slice(0, TIME_PREFIX_LENGTH);
+}
+
+export function formatTimeOfDay(value: Date | string): string {
+  return timeOfDayFormatter.format(toDate(value));
+}
+
+export function formatShortWeekday(utcDate: Date): string {
+  return shortWeekdayFormatter.format(utcDate);
+}
+
+export function formatDayMonth(utcDate: Date): string {
+  return dayMonthFormatter.format(utcDate);
+}
+
+export function formatLongDay(utcDate: Date): string {
+  return longDayFormatter.format(utcDate);
 }
 
 function toDate(value: Date | string): Date {

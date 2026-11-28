@@ -12,15 +12,21 @@ import type { UserRole } from "@/lib/api/types";
 
 type NavigationItem = {
   href: StaticAppPathname;
-  labelKey: "account" | "vehicles" | "workshopPanel" | "users" | "adminWorkshops";
+  labelKey: "account" | "vehicles" | "appointments" | "workshopPanel" | "users" | "adminWorkshops";
   roles: readonly UserRole[] | null;
   activePrefix: string;
 };
 
 const NAVIGATION_ITEMS: readonly NavigationItem[] = [
+  {
+    href: "/appointments",
+    labelKey: "appointments",
+    roles: null,
+    activePrefix: "/appointments",
+  },
   { href: "/vehicles", labelKey: "vehicles", roles: null, activePrefix: "/vehicles" },
   {
-    href: "/panel/workshop",
+    href: "/panel/calendar",
     labelKey: "workshopPanel",
     roles: ["MANAGER", "MECHANIC"],
     activePrefix: "/panel",

@@ -25,7 +25,9 @@ import {
 } from "@/features/workshop-panel/api";
 import { usePanelWorkshop } from "@/features/workshop-panel/components/panel-shell";
 import {
+  ANY_BAY_TYPE,
   EMPTY_SERVICE_TYPE_DRAFT,
+  toBayTypeOption,
   type ServiceTypeDraft,
   type ServiceTypeDraftErrors,
   toServiceTypeDraft,
@@ -35,7 +37,7 @@ import {
 } from "@/features/workshop-panel/service-type-form";
 import { useApiErrorMessage } from "@/hooks/use-api-error-message";
 import { useFormatDuration } from "@/hooks/use-format-duration";
-import { type ServiceType, VAT_RATES } from "@/lib/api/types";
+import { BAY_TYPES, type ServiceType, VAT_RATES } from "@/lib/api/types";
 import { formatCurrency } from "@/lib/format";
 
 function ServiceTypeFields({
@@ -95,6 +97,21 @@ function ServiceTypeFields({
         {VAT_RATES.map((rate) => (
           <option key={rate} value={rate}>
             {t("panel.services.vatOption", { rate })}
+          </option>
+        ))}
+      </SelectField>
+      <SelectField
+        id={`${idPrefix}-bay-type`}
+        label={t("panel.services.requiredBayType")}
+        value={draft.requiredBayType}
+        onChange={(event) =>
+          onChange({ ...draft, requiredBayType: toBayTypeOption(event.target.value) })
+        }
+      >
+        <option value={ANY_BAY_TYPE}>{t("panel.services.anyBay")}</option>
+        {BAY_TYPES.map((type) => (
+          <option key={type} value={type}>
+            {t(`bayTypes.${type}`)}
           </option>
         ))}
       </SelectField>

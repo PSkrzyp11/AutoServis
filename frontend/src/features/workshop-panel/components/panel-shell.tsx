@@ -30,10 +30,11 @@ export function usePanelWorkshop(): PanelContextValue {
 
 type PanelTab = {
   href: StaticAppPathname;
-  labelKey: "workshop" | "bays" | "services" | "team";
+  labelKey: "calendar" | "workshop" | "bays" | "services" | "team";
 };
 
 const PANEL_TABS: readonly PanelTab[] = [
+  { href: "/panel/calendar", labelKey: "calendar" },
   { href: "/panel/workshop", labelKey: "workshop" },
   { href: "/panel/bays", labelKey: "bays" },
   { href: "/panel/services", labelKey: "services" },
