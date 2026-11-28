@@ -3,10 +3,10 @@ from collections.abc import Awaitable, Callable
 from typing import Annotated
 
 import structlog
-from fastapi import Depends, Query, Request
+from fastapi import Depends, Query, Request, WebSocket
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.core.dependencies import RedisDep, SessionDep, SettingsDep, TaskQueueDep
+from app.core.dependencies import OutboxDep, RedisDep, SessionDep, SettingsDep, TaskQueueDep
 from app.core.errors import ErrorCode, ForbiddenError, UnauthorizedError
 from app.core.rate_limit import RateLimiter, RateLimitRule
 from app.models.enums import UserRole
@@ -15,12 +15,18 @@ from app.models.workshop import Workshop
 from app.schemas.pagination import PageParams
 from app.services.appointment_service import AppointmentService
 from app.services.auth_service import AuthService
+from app.services.notification_service import NotificationService
+from app.services.order_service import OrderService
 from app.services.password_reset_service import PasswordResetService
+from app.services.realtime_service import RealtimeService
 from app.services.user_service import UserService
 from app.services.vehicle_service import VehicleService
 from app.services.workshop_resource_service import BayService, ServiceTypeService
 from app.services.workshop_schedule_service import WorkshopScheduleService
 from app.services.workshop_service import WorkshopPermission, WorkshopService
+from app.ws.gateway import RealtimeGateway
+from app.ws.manager import ConnectionManager
+from app.ws.tickets import RealtimeTicketStore
 
 DEFAULT_PAGE_LIMIT = 20
 MAX_PAGE_LIMIT = 100
@@ -76,8 +82,39 @@ def get_appointment_service(
     session: SessionDep,
     settings: SettingsDep,
     task_queue: TaskQueueDep,
+    outbox: OutboxDep,
 ) -> AppointmentService:
-    return AppointmentService(session, settings, task_queue)
+    return AppointmentService(session, settings, task_queue, outbox)
+
+
+def get_order_service(
+    session: SessionDep, settings: SettingsDep, outbox: OutboxDep
+) -> OrderService:
+    return OrderService(session, settings, outbox)
+
+
+def get_notification_service(session: SessionDep, outbox: OutboxDep) -> NotificationService:
+    return NotificationService(session, outbox)
+
+
+def get_realtime_service(
+    session: SessionDep,
+    redis: RedisDep,
+    settings: SettingsDep,
+) -> RealtimeService:
+    return RealtimeService(
+        session, RealtimeTicketStore(redis, settings.realtime_ticket_ttl_seconds)
+    )
+
+
+def get_realtime_gateway(websocket: WebSocket, settings: SettingsDep) -> RealtimeGateway:
+    manager: ConnectionManager = websocket.app.state.realtime_manager
+    redis = websocket.app.state.redis
+    return RealtimeGateway(
+        manager,
+        RealtimeTicketStore(redis, settings.realtime_ticket_ttl_seconds),
+        settings.realtime_allowed_origins,
+    )
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
@@ -92,6 +129,10 @@ BayServiceDep = Annotated[BayService, Depends(get_bay_service)]
 ServiceTypeServiceDep = Annotated[ServiceTypeService, Depends(get_service_type_service)]
 VehicleServiceDep = Annotated[VehicleService, Depends(get_vehicle_service)]
 AppointmentServiceDep = Annotated[AppointmentService, Depends(get_appointment_service)]
+OrderServiceDep = Annotated[OrderService, Depends(get_order_service)]
+NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
+RealtimeServiceDep = Annotated[RealtimeService, Depends(get_realtime_service)]
+RealtimeGatewayDep = Annotated[RealtimeGateway, Depends(get_realtime_gateway)]
 
 
 async def get_current_user(

@@ -42,6 +42,12 @@ class BayRepository:
             query = query.where(Bay.id != excluded_id)
         return await self._session.scalar(query) is not None
 
+    async def get_by_name(self, workshop_id: uuid.UUID, name: str) -> Bay | None:
+        result = await self._session.execute(
+            select(Bay).where(Bay.workshop_id == workshop_id, Bay.name == name)
+        )
+        return result.scalar_one_or_none()
+
     def add(self, bay: Bay) -> None:
         self._session.add(bay)
 
@@ -89,6 +95,15 @@ class ServiceTypeRepository:
         if excluded_id is not None:
             query = query.where(ServiceType.id != excluded_id)
         return await self._session.scalar(query) is not None
+
+    async def get_by_name(self, workshop_id: uuid.UUID, name: str) -> ServiceType | None:
+        result = await self._session.execute(
+            select(ServiceType).where(
+                ServiceType.workshop_id == workshop_id,
+                ServiceType.name == name,
+            )
+        )
+        return result.scalar_one_or_none()
 
     def add(self, service_type: ServiceType) -> None:
         self._session.add(service_type)

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from app.core.email import EmailTemplate, RenderedEmail
+from app.ws.events import RealtimeEvent
 
 
 @dataclass(frozen=True)
@@ -55,3 +56,17 @@ class FakeEmailSender:
 
     async def send(self, *, recipient: str, email: RenderedEmail) -> None:
         self.sent.append(SentEmail(recipient=recipient, email=email))
+
+
+@dataclass(frozen=True)
+class PublishedEvent:
+    channel: str
+    event: RealtimeEvent
+
+
+@dataclass
+class FakeEventPublisher:
+    published: list[PublishedEvent] = field(default_factory=list)
+
+    async def publish(self, channel: str, event: RealtimeEvent) -> None:
+        self.published.append(PublishedEvent(channel=channel, event=event))

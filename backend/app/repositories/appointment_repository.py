@@ -19,6 +19,7 @@ DETAIL_OPTIONS: tuple[LoaderOption, ...] = (
     joinedload(Appointment.service_type),
     joinedload(Appointment.vehicle),
     joinedload(Appointment.client),
+    joinedload(Appointment.order),
 )
 
 

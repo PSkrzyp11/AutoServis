@@ -60,6 +60,10 @@ class Settings(BaseSettings):
     client_cancellation_deadline_hours: int = Field(default=12, ge=0)
     appointment_reminder_hours: int = Field(default=24, gt=0)
 
+    realtime_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    realtime_ticket_ttl_seconds: int = Field(default=30, gt=0)
+    order_board_closed_days: int = Field(default=7, gt=0)
+
     @field_validator("jwt_secret_key")
     @classmethod
     def validate_jwt_secret_length(cls, value: SecretStr) -> SecretStr:

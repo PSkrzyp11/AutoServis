@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, Computed, DateTime, ForeignKey, Index, Text, text
 from sqlalchemy.dialects.postgresql import TSTZRANGE, ExcludeConstraint, Range
@@ -12,6 +13,9 @@ from app.models.service_type import ServiceType
 from app.models.user import User
 from app.models.vehicle import Vehicle
 from app.models.workshop import Workshop
+
+if TYPE_CHECKING:
+    from app.models.service_order import ServiceOrder
 
 ACTIVE_STATUS_CONDITION = "status IN ('SCHEDULED', 'CHECKED_IN')"
 PERIOD_EXPRESSION = "tstzrange(start_at, end_at, '[)')"
@@ -69,3 +73,4 @@ class Appointment(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     vehicle: Mapped[Vehicle] = relationship(lazy="raise")
     client: Mapped[User] = relationship(lazy="raise")
     service_type: Mapped[ServiceType] = relationship(lazy="raise")
+    order: Mapped["ServiceOrder | None"] = relationship(back_populates="appointment", lazy="raise")
