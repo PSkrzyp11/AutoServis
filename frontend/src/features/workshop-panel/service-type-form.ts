@@ -1,6 +1,5 @@
 import type { ServiceTypeCreatePayload } from "@/features/workshop-panel/api";
-import type { ServiceType } from "@/lib/api/types";
-import { VAT_RATES } from "@/lib/api/types";
+import { BAY_TYPES, type BayType, type ServiceType, VAT_RATES } from "@/lib/api/types";
 
 const PRICE_PATTERN = /^\d{1,10}([.,]\d{1,2})?$/;
 const DURATION_PATTERN = /^\d{1,3}$/;
@@ -9,14 +8,17 @@ const MAX_DURATION_MINUTES = 480;
 const DEFAULT_VAT_RATE = "23";
 const DECIMAL_COMMA = ",";
 const DECIMAL_POINT = ".";
+export const ANY_BAY_TYPE = "";
 
 export type VatRateOption = (typeof VAT_RATES)[number];
+export type BayTypeOption = BayType | typeof ANY_BAY_TYPE;
 
 export type ServiceTypeDraft = {
   name: string;
   durationMinutes: string;
   priceNet: string;
   vatRate: VatRateOption;
+  requiredBayType: BayTypeOption;
 };
 
 export type ServiceTypeDraftErrors = Partial<
@@ -28,7 +30,12 @@ export const EMPTY_SERVICE_TYPE_DRAFT: ServiceTypeDraft = {
   durationMinutes: "60",
   priceNet: "",
   vatRate: DEFAULT_VAT_RATE,
+  requiredBayType: ANY_BAY_TYPE,
 };
+
+export function toBayTypeOption(value: string): BayTypeOption {
+  return BAY_TYPES.find((type) => type === value) ?? ANY_BAY_TYPE;
+}
 
 function isVatRateOption(value: string): value is VatRateOption {
   return VAT_RATES.some((rate) => rate === value);
@@ -45,6 +52,7 @@ export function toServiceTypeDraft(serviceType: ServiceType): ServiceTypeDraft {
     durationMinutes: String(serviceType.duration_minutes),
     priceNet: serviceType.base_price_net.replace(DECIMAL_POINT, DECIMAL_COMMA),
     vatRate: toVatRateOption(serviceType.vat_rate),
+    requiredBayType: serviceType.required_bay_type ?? ANY_BAY_TYPE,
   };
 }
 
@@ -74,5 +82,6 @@ export function toServiceTypePayload(draft: ServiceTypeDraft): ServiceTypeCreate
     duration_minutes: Number(draft.durationMinutes),
     base_price_net: draft.priceNet.trim().replace(DECIMAL_COMMA, DECIMAL_POINT),
     vat_rate: draft.vatRate,
+    required_bay_type: draft.requiredBayType === ANY_BAY_TYPE ? null : draft.requiredBayType,
   };
 }

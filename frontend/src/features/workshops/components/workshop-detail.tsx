@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { ArrowLeftIcon, CalendarPlusIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getWorkshopBySlug } from "@/features/workshops/server";
+import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { OpeningHoursEntry, ServiceType } from "@/lib/api/types";
 import { splitDuration } from "@/lib/duration";
@@ -129,11 +130,22 @@ export async function WorkshopDetail({ params }: { params: Promise<{ slug: strin
         <ArrowLeftIcon aria-hidden="true" className="size-4" />
         {t("backToSearch")}
       </Link>
-      <header className="grid gap-1">
-        <h1 className="text-3xl font-semibold text-balance">{workshop.name}</h1>
-        <p className="text-muted-foreground">
-          {workshop.street}, {workshop.postal_code} {workshop.city}
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div className="grid gap-1">
+          <h1 className="text-3xl font-semibold text-balance">{workshop.name}</h1>
+          <p className="text-muted-foreground">
+            {workshop.street}, {workshop.postal_code} {workshop.city}
+          </p>
+        </div>
+        {workshop.service_types.length > 0 ? (
+          <Link
+            href={{ pathname: "/workshops/[slug]/booking", params: { slug: workshop.slug } }}
+            className={buttonVariants({ size: "lg" })}
+          >
+            <CalendarPlusIcon aria-hidden="true" />
+            {t("book")}
+          </Link>
+        ) : null}
       </header>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>

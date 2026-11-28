@@ -4,7 +4,7 @@ AutoServis is a web platform that connects car owners with car repair workshops.
 
 The user interface is in Polish because the target users are Polish clients and workshops. Everything aimed at developers (code, API, documentation, commits) is in English.
 
-> Status: **Stage 2 of 8 completed** — public workshop search, client vehicles, workshop management panel for staff and workshop administration.
+> Status: **Stage 3 of 8 completed** — public workshop search, client vehicles, online booking with free slot search, a client appointment list, a daily workshop calendar and workshop administration.
 
 ## Features
 
@@ -12,8 +12,9 @@ The user interface is in Polish because the target users are Polish clients and 
 | --- | --- |
 | Everyone | Search workshops by city and name (`/warsztaty`), see opening hours, upcoming closures and the price list |
 | Client | Register, sign in, manage profile and vehicles (`/pojazdy`) with VIN and plate validation |
-| Mechanic | Read-only workshop panel (`/panel/warsztat`): data, opening hours, bays, services and team |
-| Manager | Everything a mechanic sees plus editing workshop data, opening hours, closures, bays and the price list |
+| Client | Book a visit (`/warsztaty/[slug]/rezerwacja`): pick a service, vehicle, day and free time slot; see upcoming and past visits and cancel them up to 12 hours ahead (`/wizyty`) |
+| Mechanic | Daily workshop calendar (`/panel/kalendarz`) with appointments per bay, vehicle check-in and no-show marking; read-only workshop data, opening hours, bays, services and team |
+| Manager | Everything a mechanic sees plus cancelling appointments and editing workshop data, opening hours, closures, bays and the price list with a required bay type per service |
 | Administrator | Manage users and roles (`/admin/uzytkownicy`), create and deactivate workshops and assign staff (`/admin/warsztaty`) |
 
 ## Tech stack
@@ -177,6 +178,8 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 - Opening hours are local wall-clock times. Slots are converted to UTC with `zoneinfo`, so daylight saving time changes are handled.
 - A confirmation email is sent after booking. An ARQ cron job runs every 15 minutes and sends reminders 24 hours ahead, claiming rows with `FOR UPDATE SKIP LOCKED` so that parallel workers never send the same reminder twice.
 - Booking rules are configurable in `.env`: lead time, booking horizon, client cancellation deadline and reminder window.
+- The booking page shows the next three weeks with closed days disabled. When someone takes the chosen slot first, the API returns `APPOINTMENT_SLOT_TAKEN` and the page reloads free slots.
+- The workshop calendar is a grid with one column per bay and 15 minute rows on larger screens and a list grouped by bay on phones.
 
 ### Internationalization
 
@@ -199,7 +202,7 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 
 1. ✅ Monorepo foundation, Docker Compose, configuration, health checks, CI, i18n, authentication and RBAC
 2. ✅ Workshops, vehicles, service bays and demo seed data
-3. 🚧 Bookings and calendar with database-level double booking protection (backend done)
+3. ✅ Bookings and calendar with database-level double booking protection
 4. Repair orders, state machine, Kanban board, WebSockets, notifications
 5. Cost estimates, inventory, chat with photo attachments
 6. PDF invoices, Stripe payments, background emails

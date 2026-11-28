@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   EMPTY_SERVICE_TYPE_DRAFT,
+  toBayTypeOption,
   toServiceTypeDraft,
   toServiceTypePayload,
   toVatRateOption,
@@ -18,7 +19,20 @@ describe("service type form logic", () => {
       duration_minutes: 60,
       base_price_net: "179.50",
       vat_rate: "23",
+      required_bay_type: null,
     });
+  });
+
+  it("sends the required bay type when one is selected", () => {
+    const draft = {
+      ...EMPTY_SERVICE_TYPE_DRAFT,
+      name: "Wymiana opon",
+      priceNet: "129",
+      requiredBayType: toBayTypeOption("TIRES"),
+    };
+
+    expect(toServiceTypePayload(draft).required_bay_type).toBe("TIRES");
+    expect(toBayTypeOption("UNKNOWN")).toBe("");
   });
 
   it.each(["0", "50", "490", "abc"])("rejects duration %s", (durationMinutes) => {
@@ -65,6 +79,7 @@ describe("service type form logic", () => {
       durationMinutes: "45",
       priceNet: "199,00",
       vatRate: "8",
+      requiredBayType: "",
     });
     expect(toVatRateOption("13.00")).toBe("23");
   });

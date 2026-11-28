@@ -9,11 +9,13 @@ import type {
   Closure,
   OpeningHoursEntry,
   ServiceType,
+  StaffAppointment,
   WorkshopMember,
   WorkshopRead,
   WorkshopStaffDetail,
   WorkshopSummary,
 } from "@/lib/api/types";
+import type { DayKey } from "@/lib/day-keys";
 
 type Schemas = components["schemas"];
 export type BayCreatePayload = Schemas["BayCreate"];
@@ -30,7 +32,66 @@ export const workshopKeys = {
   bays: (workshopId: string) => ["workshop", workshopId, "bays"] as const,
   serviceTypes: (workshopId: string) => ["workshop", workshopId, "service-types"] as const,
   members: (workshopId: string) => ["workshop", workshopId, "members"] as const,
+  appointments: (workshopId: string) => ["workshop", workshopId, "appointments"] as const,
 };
+
+export type AppointmentAction = "check-in" | "no-show" | "cancel";
+
+export function useWorkshopAppointments(workshopId: string, day: DayKey) {
+  return useQuery({
+    queryKey: [...workshopKeys.appointments(workshopId), day],
+    queryFn: (): Promise<StaffAppointment[]> =>
+      callApi(() =>
+        apiClient.GET("/api/v1/workshops/{workshop_id}/appointments", {
+          params: {
+            path: { workshop_id: workshopId },
+            query: { from_date: day, to_date: day },
+          },
+        }),
+      ),
+  });
+}
+
+function runAppointmentAction(
+  workshopId: string,
+  appointmentId: string,
+  action: AppointmentAction,
+): Promise<StaffAppointment> {
+  const params = { params: { path: { workshop_id: workshopId, appointment_id: appointmentId } } };
+  switch (action) {
+    case "check-in":
+      return callApi(() =>
+        apiClient.POST(
+          "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/check-in",
+          params,
+        ),
+      );
+    case "no-show":
+      return callApi(() =>
+        apiClient.POST(
+          "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/no-show",
+          params,
+        ),
+      );
+    case "cancel":
+      return callApi(() =>
+        apiClient.POST(
+          "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/cancel",
+          params,
+        ),
+      );
+  }
+}
+
+export function useAppointmentAction(workshopId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ appointmentId, action }: { appointmentId: string; action: AppointmentAction }) =>
+      runAppointmentAction(workshopId, appointmentId, action),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: workshopKeys.appointments(workshopId) }),
+  });
+}
 
 function workshopPath(workshopId: string) {
   return { params: { path: { workshop_id: workshopId } } };

@@ -11,6 +11,8 @@ type ConfirmButtonProps = {
   onConfirm: () => void;
   disabled?: boolean;
   accessibleLabel?: string;
+  confirmLabel?: string;
+  dismissLabel?: string;
 };
 
 export function ConfirmButton({
@@ -19,6 +21,8 @@ export function ConfirmButton({
   onConfirm,
   disabled,
   accessibleLabel,
+  confirmLabel,
+  dismissLabel,
 }: ConfirmButtonProps) {
   const t = useTranslations("common");
   const [isConfirming, setIsConfirming] = useState(false);
@@ -49,10 +53,10 @@ export function ConfirmButton({
           onConfirm();
         }}
       >
-        {t("confirmDelete")}
+        {confirmLabel ?? t("confirmDelete")}
       </Button>
       <Button variant="ghost" size="sm" onClick={() => setIsConfirming(false)}>
-        {t("cancel")}
+        {dismissLabel ?? t("cancel")}
       </Button>
     </div>
   );
