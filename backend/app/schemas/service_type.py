@@ -5,6 +5,7 @@ from typing import Annotated
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, computed_field
 
 from app.core.money import gross_from_net
+from app.models.enums import BayType
 from app.schemas.common import DecimalAmount, VatRate
 
 SLOT_MINUTES = 15
@@ -34,6 +35,10 @@ class ServiceTypeCreate(BaseModel):
     duration_minutes: DurationMinutes
     base_price_net: NetPrice
     vat_rate: VatRate = Field(default=DEFAULT_VAT_RATE, description="VAT rate in percent")
+    required_bay_type: BayType | None = Field(
+        default=None,
+        description="Bay type needed for this service, any active bay when empty",
+    )
 
 
 class ServiceTypeUpdate(BaseModel):
@@ -43,6 +48,10 @@ class ServiceTypeUpdate(BaseModel):
     duration_minutes: DurationMinutes | None = None
     base_price_net: NetPrice | None = None
     vat_rate: VatRate | None = None
+    required_bay_type: BayType | None = Field(
+        default=None,
+        description="Send null to allow any bay type",
+    )
     is_active: bool | None = None
 
 
@@ -54,6 +63,7 @@ class ServiceTypeRead(BaseModel):
     duration_minutes: int
     base_price_net: DecimalAmount
     vat_rate: DecimalAmount
+    required_bay_type: BayType | None
     is_active: bool
 
     @computed_field(description="Base price including VAT in PLN")

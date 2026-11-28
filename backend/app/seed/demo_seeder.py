@@ -133,6 +133,7 @@ class DemoSeeder:
                         price_adjustment_percent,
                     ),
                     vat_rate=service.vat_rate,
+                    required_bay_type=service.required_bay_type,
                 )
             )
             self._summary.service_types_created += 1

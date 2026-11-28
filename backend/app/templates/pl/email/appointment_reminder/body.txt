@@ -1,0 +1,13 @@
+Cześć {{ full_name }},
+
+przypominamy o jutrzejszej wizycie w warsztacie {{ workshop_name }}.
+
+Termin: {{ date }}, {{ start_time }}–{{ end_time }}
+Usługa: {{ service_name }}
+Pojazd: {{ vehicle }}
+Adres: {{ workshop_address }}
+Telefon do warsztatu: {{ workshop_phone }}
+
+Prosimy o przyjazd kilka minut wcześniej. Jeśli coś się zmieniło, zadzwoń do warsztatu.
+
+Zespół AutoServis

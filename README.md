@@ -169,6 +169,15 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 - VINs and plate numbers are normalized to upper case without spaces. A VIN is unique among vehicles that are not deleted, so a sold car can be added to a new account.
 - Vehicles are soft deleted to keep their service history.
 
+### Bookings
+
+- Free slots are computed every 15 minutes from the weekly opening hours, closure days, the service duration and existing appointments. A slot is free when at least one suitable bay is free for the whole duration. Services can require a bay type, for example a tire bay.
+- Clients pick a time, the bay is assigned automatically inside a database savepoint.
+- Double booking is impossible at the database level. Two `EXCLUDE USING gist` constraints on a generated `tstzrange` column prevent overlapping active appointments on the same bay and for the same vehicle. A concurrency test books the last free slot from two transactions at once and expects exactly one winner.
+- Opening hours are local wall-clock times. Slots are converted to UTC with `zoneinfo`, so daylight saving time changes are handled.
+- A confirmation email is sent after booking. An ARQ cron job runs every 15 minutes and sends reminders 24 hours ahead, claiming rows with `FOR UPDATE SKIP LOCKED` so that parallel workers never send the same reminder twice.
+- Booking rules are configurable in `.env`: lead time, booking horizon, client cancellation deadline and reminder window.
+
 ### Internationalization
 
 - UI texts live only in `frontend/messages/pl.json` with English keys such as `auth.login.submit`. The structure is ready for additional locales.
@@ -190,7 +199,7 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 
 1. ✅ Monorepo foundation, Docker Compose, configuration, health checks, CI, i18n, authentication and RBAC
 2. ✅ Workshops, vehicles, service bays and demo seed data
-3. Bookings and calendar with database-level double booking protection
+3. 🚧 Bookings and calendar with database-level double booking protection (backend done)
 4. Repair orders, state machine, Kanban board, WebSockets, notifications
 5. Cost estimates, inventory, chat with photo attachments
 6. PDF invoices, Stripe payments, background emails

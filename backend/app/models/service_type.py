@@ -4,7 +4,8 @@ from decimal import Decimal
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric, String, UniqueConstraint, true
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin, string_enum
+from app.models.enums import BayType
 
 SERVICE_NAME_MAX_LENGTH = 150
 MONEY_PRECISION = 12
@@ -29,4 +30,7 @@ class ServiceType(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     duration_minutes: Mapped[int]
     base_price_net: Mapped[Decimal] = mapped_column(Numeric(MONEY_PRECISION, MONEY_SCALE))
     vat_rate: Mapped[Decimal] = mapped_column(Numeric(VAT_RATE_PRECISION, MONEY_SCALE))
+    required_bay_type: Mapped[BayType | None] = mapped_column(
+        string_enum(BayType, "required_bay_type"),
+    )
     is_active: Mapped[bool] = mapped_column(default=True, server_default=true())

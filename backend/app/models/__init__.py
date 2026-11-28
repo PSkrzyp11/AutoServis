@@ -1,3 +1,4 @@
+from app.models.appointment import Appointment
 from app.models.base import Base
 from app.models.bay import Bay
 from app.models.password_reset_token import PasswordResetToken
@@ -13,6 +14,7 @@ from app.models.workshop import (
 )
 
 __all__ = [
+    "Appointment",
     "Base",
     "Bay",
     "PasswordResetToken",

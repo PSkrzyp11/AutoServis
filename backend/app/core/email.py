@@ -16,6 +16,8 @@ DEFAULT_LOCALE = "pl"
 
 class EmailTemplate(StrEnum):
     PASSWORD_RESET = "password_reset"
+    APPOINTMENT_CONFIRMATION = "appointment_confirmation"
+    APPOINTMENT_REMINDER = "appointment_reminder"
 
 
 @dataclass(frozen=True)

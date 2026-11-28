@@ -18,6 +18,16 @@ class BayType(StrEnum):
     TIRES = "TIRES"
 
 
+class AppointmentStatus(StrEnum):
+    SCHEDULED = "SCHEDULED"
+    CHECKED_IN = "CHECKED_IN"
+    CANCELLED = "CANCELLED"
+    NO_SHOW = "NO_SHOW"
+
+
+ACTIVE_APPOINTMENT_STATUSES = frozenset({AppointmentStatus.SCHEDULED, AppointmentStatus.CHECKED_IN})
+
+
 class IsoWeekday(IntEnum):
     MONDAY = 1
     TUESDAY = 2

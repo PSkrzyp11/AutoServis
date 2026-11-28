@@ -5,7 +5,7 @@
     { "name": "Diagnostyka komputerowa", "duration_minutes": 45, "base_price_net": "149.00", "vat_rate": "23" },
     { "name": "Wymiana klocków hamulcowych (jedna oś)", "duration_minutes": 90, "base_price_net": "249.00", "vat_rate": "23" },
     { "name": "Ustawienie geometrii kół", "duration_minutes": 60, "base_price_net": "179.00", "vat_rate": "23" },
-    { "name": "Wymiana opon (komplet)", "duration_minutes": 45, "base_price_net": "129.00", "vat_rate": "23" },
+    { "name": "Wymiana opon (komplet)", "duration_minutes": 45, "base_price_net": "129.00", "vat_rate": "23", "required_bay_type": "TIRES" },
     { "name": "Serwis klimatyzacji", "duration_minutes": 60, "base_price_net": "219.00", "vat_rate": "23" }
   ],
   "workshops": [
@@ -38,7 +38,8 @@
         { "name": "Stanowisko 1", "type": "GENERAL" },
         { "name": "Podnośnik A", "type": "LIFT" },
         { "name": "Podnośnik B", "type": "LIFT" },
-        { "name": "Stanowisko diagnostyczne", "type": "DIAGNOSTIC" }
+        { "name": "Stanowisko diagnostyczne", "type": "DIAGNOSTIC" },
+        { "name": "Wulkanizacja", "type": "TIRES" }
       ],
       "staff": [
         { "email": "tomasz.wisniewski@example.com", "full_name": "Tomasz Wiśniewski", "phone": "+48 501 234 567", "role": "MANAGER" },
