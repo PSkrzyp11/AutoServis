@@ -55,6 +55,11 @@ class Settings(BaseSettings):
 
     demo_user_password: SecretStr | None = None
 
+    booking_lead_time_minutes: int = Field(default=60, ge=0)
+    booking_horizon_days: int = Field(default=60, gt=0)
+    client_cancellation_deadline_hours: int = Field(default=12, ge=0)
+    appointment_reminder_hours: int = Field(default=24, gt=0)
+
     @field_validator("jwt_secret_key")
     @classmethod
     def validate_jwt_secret_length(cls, value: SecretStr) -> SecretStr:
@@ -74,6 +79,18 @@ class Settings(BaseSettings):
     @property
     def password_reset_token_ttl(self) -> timedelta:
         return timedelta(minutes=self.password_reset_token_ttl_minutes)
+
+    @property
+    def booking_lead_time(self) -> timedelta:
+        return timedelta(minutes=self.booking_lead_time_minutes)
+
+    @property
+    def client_cancellation_deadline(self) -> timedelta:
+        return timedelta(hours=self.client_cancellation_deadline_hours)
+
+    @property
+    def appointment_reminder_window(self) -> timedelta:
+        return timedelta(hours=self.appointment_reminder_hours)
 
 
 @lru_cache

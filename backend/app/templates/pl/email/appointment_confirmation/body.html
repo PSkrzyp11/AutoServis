@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Potwierdzenie wizyty{% endblock %}
+{% block content %}
+<p style="margin:0 0 16px;">Cześć {{ full_name }},</p>
+<p style="margin:0 0 16px;">potwierdzamy rezerwację wizyty w warsztacie <strong>{{ workshop_name }}</strong>.</p>
+{% include "appointment_details.html" %}
+<p style="margin:0;">Dzień przed wizytą wyślemy Ci przypomnienie. Jeśli nie możesz przyjechać, anuluj wizytę w zakładce Moje wizyty.</p>
+{% endblock %}

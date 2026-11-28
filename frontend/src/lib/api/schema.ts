@@ -351,6 +351,134 @@ export interface paths {
         patch: operations["update_service_type_api_v1_workshops__workshop_id__service_types__service_type_id__patch"];
         trace?: never;
     };
+    "/api/v1/workshops/{workshop_id}/appointments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_workshop_appointments_api_v1_workshops__workshop_id__appointments_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/check-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["check_in_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__check_in_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/no-show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["mark_no_show_api_v1_workshops__workshop_id__appointments__appointment_id__no_show_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["cancel_workshop_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_availability_api_v1_workshops__workshop_id__availability_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/appointments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["book_appointment_api_v1_appointments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/appointments/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_my_appointments_api_v1_appointments_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/appointments/{appointment_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["cancel_my_appointment_api_v1_appointments__appointment_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vehicles": {
         parameters: {
             query?: never;
@@ -502,6 +630,59 @@ export interface components {
             email?: string | null;
             is_active?: boolean | null;
         };
+        AppointmentBay: {
+            id: string;
+            name: string;
+        };
+        AppointmentClient: {
+            id: string;
+            full_name: string;
+            email: string;
+            phone: string | null;
+            role: components["schemas"]["UserRole"];
+        };
+        AppointmentCreate: {
+            workshop_id: string;
+            service_type_id: string;
+            vehicle_id: string;
+            start_at: string;
+            problem_description?: string | null;
+        };
+        AppointmentRead: {
+            id: string;
+            status: components["schemas"]["AppointmentStatus"];
+            start_at: string;
+            end_at: string;
+            problem_description: string | null;
+            created_at: string;
+            cancelled_at: string | null;
+            workshop: components["schemas"]["AppointmentWorkshop"];
+            service_type: components["schemas"]["ServiceTypeRead"];
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            bay: components["schemas"]["AppointmentBay"];
+        };
+        AppointmentScope: "upcoming" | "past";
+        AppointmentStatus: "SCHEDULED" | "CHECKED_IN" | "CANCELLED" | "NO_SHOW";
+        AppointmentVehicle: {
+            id: string;
+            make: string;
+            model: string;
+            production_year: number;
+            plate_number: string;
+        };
+        AppointmentWorkshop: {
+            id: string;
+            slug: string;
+            name: string;
+            street: string;
+            postal_code: string;
+            city: string;
+            phone: string;
+        };
+        AvailableSlotRead: {
+            start_at: string;
+            end_at: string;
+        };
         BayCreate: {
             name: string;
             type: components["schemas"]["BayType"];
@@ -528,6 +709,12 @@ export interface components {
             reason: string | null;
         };
         ComponentStatus: "ok" | "unavailable";
+        DayAvailability: {
+            day: string;
+            service_type_id: string;
+            duration_minutes: number;
+            slots: components["schemas"]["AvailableSlotRead"][];
+        };
         ErrorBody: {
             code: components["schemas"]["ErrorCode"];
             message: string;
@@ -535,7 +722,7 @@ export interface components {
                 [key: string]: components["schemas"]["JsonValue"];
             };
         };
-        ErrorCode: "VALIDATION_ERROR" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "TOKEN_EXPIRED" | "FORBIDDEN" | "USER_INACTIVE" | "EMAIL_ALREADY_REGISTERED" | "SELF_MODIFICATION_FORBIDDEN" | "WORKSHOP_ACCESS_DENIED" | "USER_NOT_STAFF" | "MEMBER_ALREADY_EXISTS" | "CLOSURE_ALREADY_EXISTS" | "BAY_NAME_TAKEN" | "SERVICE_NAME_TAKEN" | "VIN_ALREADY_REGISTERED" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "RATE_LIMITED" | "HTTP_ERROR" | "INTERNAL_ERROR";
+        ErrorCode: "VALIDATION_ERROR" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "TOKEN_EXPIRED" | "FORBIDDEN" | "USER_INACTIVE" | "EMAIL_ALREADY_REGISTERED" | "SELF_MODIFICATION_FORBIDDEN" | "WORKSHOP_ACCESS_DENIED" | "USER_NOT_STAFF" | "MEMBER_ALREADY_EXISTS" | "CLOSURE_ALREADY_EXISTS" | "BAY_NAME_TAKEN" | "SERVICE_NAME_TAKEN" | "VIN_ALREADY_REGISTERED" | "SERVICE_NOT_AVAILABLE" | "SLOT_NOT_AVAILABLE" | "APPOINTMENT_SLOT_TAKEN" | "VEHICLE_ALREADY_BOOKED" | "CANCELLATION_TOO_LATE" | "INVALID_STATUS_TRANSITION" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "RATE_LIMITED" | "HTTP_ERROR" | "INTERNAL_ERROR";
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
         };
@@ -558,6 +745,12 @@ export interface components {
         };
         OpeningHoursUpdate: {
             days: components["schemas"]["OpeningHoursEntry"][];
+        };
+        Page_AppointmentRead_: {
+            items: components["schemas"]["AppointmentRead"][];
+            total: number;
+            limit: number;
+            offset: number;
         };
         Page_UserRead_: {
             items: components["schemas"]["UserRead"][];
@@ -601,6 +794,7 @@ export interface components {
             duration_minutes: number;
             base_price_net: number | string;
             vat_rate: number | string;
+            required_bay_type?: components["schemas"]["BayType"] | null;
         };
         ServiceTypeRead: {
             id: string;
@@ -608,6 +802,7 @@ export interface components {
             duration_minutes: number;
             base_price_net: string;
             vat_rate: string;
+            required_bay_type: components["schemas"]["BayType"] | null;
             is_active: boolean;
             readonly base_price_gross: string;
         };
@@ -616,9 +811,24 @@ export interface components {
             duration_minutes?: number | null;
             base_price_net?: (number | string) | null;
             vat_rate?: number | string | null;
+            required_bay_type?: components["schemas"]["BayType"] | null;
             is_active?: boolean | null;
         };
         SortOrder: "asc" | "desc";
+        StaffAppointmentRead: {
+            id: string;
+            status: components["schemas"]["AppointmentStatus"];
+            start_at: string;
+            end_at: string;
+            problem_description: string | null;
+            created_at: string;
+            cancelled_at: string | null;
+            workshop: components["schemas"]["AppointmentWorkshop"];
+            service_type: components["schemas"]["ServiceTypeRead"];
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            bay: components["schemas"]["AppointmentBay"];
+            client: components["schemas"]["AppointmentClient"];
+        };
         UserProfileUpdate: {
             full_name?: string | null;
             phone?: string | null;
@@ -1988,6 +2198,467 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ServiceTypeRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_workshop_appointments_api_v1_workshops__workshop_id__appointments_get: {
+        parameters: {
+            query: {
+                from_date: string;
+                to_date: string;
+            };
+            header?: never;
+            path: {
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAppointmentRead"][];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    check_in_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__check_in_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                appointment_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAppointmentRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mark_no_show_api_v1_workshops__workshop_id__appointments__appointment_id__no_show_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                appointment_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAppointmentRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    cancel_workshop_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                appointment_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAppointmentRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_availability_api_v1_workshops__workshop_id__availability_get: {
+        parameters: {
+            query: {
+                service_type_id: string;
+                date: string;
+            };
+            header?: never;
+            path: {
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DayAvailability"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    book_appointment_api_v1_appointments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppointmentCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppointmentRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_my_appointments_api_v1_appointments_mine_get: {
+        parameters: {
+            query?: {
+                scope?: components["schemas"]["AppointmentScope"];
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AppointmentRead_"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    cancel_my_appointment_api_v1_appointments__appointment_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                appointment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppointmentRead"];
                 };
             };
             401: {

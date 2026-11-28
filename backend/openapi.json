@@ -1975,6 +1975,769 @@
         }
       }
     },
+    "/api/v1/workshops/{workshop_id}/appointments": {
+      "get": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "List workshop appointments in a date range",
+        "description": "Local dates in the workshop time zone, inclusive, at most 31 days.",
+        "operationId": "list_workshop_appointments_api_v1_workshops__workshop_id__appointments_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "First local date",
+              "title": "From Date"
+            },
+            "description": "First local date"
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Last local date",
+              "title": "To Date"
+            },
+            "description": "Last local date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StaffAppointmentRead"
+                  },
+                  "title": "Response List Workshop Appointments Api V1 Workshops  Workshop Id  Appointments Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/check-in": {
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "Mark that the vehicle arrived",
+        "operationId": "check_in_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__check_in_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Appointment Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffAppointmentRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/no-show": {
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "Mark that the client did not arrive",
+        "description": "Allowed only after the appointment start time.",
+        "operationId": "mark_no_show_api_v1_workshops__workshop_id__appointments__appointment_id__no_show_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Appointment Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffAppointmentRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/appointments/{appointment_id}/cancel": {
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "Cancel an appointment on behalf of the workshop",
+        "operationId": "cancel_workshop_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__cancel_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Appointment Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffAppointmentRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/availability": {
+      "get": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "List free booking slots for a day",
+        "description": "Public. Returns start times, every 15 minutes, when at least one suitable bay is free for the whole service duration. Days outside the booking horizon return no slots.",
+        "operationId": "get_availability_api_v1_workshops__workshop_id__availability_get",
+        "parameters": [
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          },
+          {
+            "name": "service_type_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Service to book",
+              "title": "Service Type Id"
+            },
+            "description": "Service to book"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Local date in the workshop time zone",
+              "title": "Date"
+            },
+            "description": "Local date in the workshop time zone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DayAvailability"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/appointments": {
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "Book an appointment",
+        "description": "Books a slot returned by the availability endpoint. A free bay is assigned automatically and a confirmation email is sent.",
+        "operationId": "book_appointment_api_v1_appointments_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/appointments/mine": {
+      "get": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "List my appointments",
+        "description": "Upcoming appointments are sorted from the nearest, past ones from the latest.",
+        "operationId": "list_my_appointments_api_v1_appointments_mine_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/AppointmentScope",
+              "description": "Which appointments to list",
+              "default": "upcoming"
+            },
+            "description": "Which appointments to list"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_AppointmentRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/appointments/{appointment_id}/cancel": {
+      "post": {
+        "tags": [
+          "appointments"
+        ],
+        "summary": "Cancel my appointment",
+        "description": "Allowed for scheduled appointments until the configured deadline before start.",
+        "operationId": "cancel_my_appointment_api_v1_appointments__appointment_id__cancel_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "appointment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Appointment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/vehicles": {
       "get": {
         "tags": [
@@ -3352,6 +4115,309 @@
         "type": "object",
         "title": "AdminWorkshopUpdate"
       },
+      "AppointmentBay": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "AppointmentBay"
+      },
+      "AppointmentClient": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name",
+          "email",
+          "phone",
+          "role"
+        ],
+        "title": "AppointmentClient"
+      },
+      "AppointmentCreate": {
+        "properties": {
+          "workshop_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workshop Id"
+          },
+          "service_type_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Service Type Id"
+          },
+          "vehicle_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Vehicle Id",
+            "description": "One of the vehicles owned by the signed in user"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start At",
+            "description": "Start of a slot returned by the availability endpoint"
+          },
+          "problem_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem Description",
+            "description": "Symptoms or wishes described by the client"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "workshop_id",
+          "service_type_id",
+          "vehicle_id",
+          "start_at"
+        ],
+        "title": "AppointmentCreate"
+      },
+      "AppointmentRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AppointmentStatus"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start At"
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End At"
+          },
+          "problem_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem Description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelled At"
+          },
+          "workshop": {
+            "$ref": "#/components/schemas/AppointmentWorkshop"
+          },
+          "service_type": {
+            "$ref": "#/components/schemas/ServiceTypeRead"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "bay": {
+            "$ref": "#/components/schemas/AppointmentBay"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "start_at",
+          "end_at",
+          "problem_description",
+          "created_at",
+          "cancelled_at",
+          "workshop",
+          "service_type",
+          "vehicle",
+          "bay"
+        ],
+        "title": "AppointmentRead"
+      },
+      "AppointmentScope": {
+        "type": "string",
+        "enum": [
+          "upcoming",
+          "past"
+        ],
+        "title": "AppointmentScope"
+      },
+      "AppointmentStatus": {
+        "type": "string",
+        "enum": [
+          "SCHEDULED",
+          "CHECKED_IN",
+          "CANCELLED",
+          "NO_SHOW"
+        ],
+        "title": "AppointmentStatus"
+      },
+      "AppointmentVehicle": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "make": {
+            "type": "string",
+            "title": "Make"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "production_year": {
+            "type": "integer",
+            "title": "Production Year"
+          },
+          "plate_number": {
+            "type": "string",
+            "title": "Plate Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "make",
+          "model",
+          "production_year",
+          "plate_number"
+        ],
+        "title": "AppointmentVehicle"
+      },
+      "AppointmentWorkshop": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "street": {
+            "type": "string",
+            "title": "Street"
+          },
+          "postal_code": {
+            "type": "string",
+            "title": "Postal Code"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "street",
+          "postal_code",
+          "city",
+          "phone"
+        ],
+        "title": "AppointmentWorkshop"
+      },
+      "AvailableSlotRead": {
+        "properties": {
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start At",
+            "description": "Slot start in UTC"
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End At",
+            "description": "Slot end in UTC"
+          }
+        },
+        "type": "object",
+        "required": [
+          "start_at",
+          "end_at"
+        ],
+        "title": "AvailableSlotRead"
+      },
       "BayCreate": {
         "properties": {
           "name": {
@@ -3522,6 +4588,40 @@
         ],
         "title": "ComponentStatus"
       },
+      "DayAvailability": {
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "title": "Day",
+            "description": "Local date in the workshop time zone"
+          },
+          "service_type_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Service Type Id"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/AvailableSlotRead"
+            },
+            "type": "array",
+            "title": "Slots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day",
+          "service_type_id",
+          "duration_minutes",
+          "slots"
+        ],
+        "title": "DayAvailability"
+      },
       "ErrorBody": {
         "properties": {
           "code": {
@@ -3568,6 +4668,12 @@
           "BAY_NAME_TAKEN",
           "SERVICE_NAME_TAKEN",
           "VIN_ALREADY_REGISTERED",
+          "SERVICE_NOT_AVAILABLE",
+          "SLOT_NOT_AVAILABLE",
+          "APPOINTMENT_SLOT_TAKEN",
+          "VEHICLE_ALREADY_BOOKED",
+          "CANCELLATION_TOO_LATE",
+          "INVALID_STATUS_TRANSITION",
           "NOT_FOUND",
           "METHOD_NOT_ALLOWED",
           "RATE_LIMITED",
@@ -3692,6 +4798,40 @@
           "days"
         ],
         "title": "OpeningHoursUpdate"
+      },
+      "Page_AppointmentRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppointmentRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of items matching the filters"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of items returned in this page"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Number of items skipped before this page"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[AppointmentRead]"
       },
       "Page_UserRead_": {
         "properties": {
@@ -3956,6 +5096,17 @@
             "title": "Vat Rate",
             "description": "VAT rate in percent",
             "default": "23"
+          },
+          "required_bay_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BayType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Bay type needed for this service, any active bay when empty"
           }
         },
         "additionalProperties": false,
@@ -3990,6 +5141,16 @@
             "type": "string",
             "title": "Vat Rate"
           },
+          "required_bay_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BayType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "is_active": {
             "type": "boolean",
             "title": "Is Active"
@@ -4008,6 +5169,7 @@
           "duration_minutes",
           "base_price_net",
           "vat_rate",
+          "required_bay_type",
           "is_active",
           "base_price_gross"
         ],
@@ -4077,6 +5239,17 @@
             ],
             "title": "Vat Rate"
           },
+          "required_bay_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BayType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Send null to allow any bay type"
+          },
           "is_active": {
             "anyOf": [
               {
@@ -4100,6 +5273,87 @@
           "desc"
         ],
         "title": "SortOrder"
+      },
+      "StaffAppointmentRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AppointmentStatus"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start At"
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End At"
+          },
+          "problem_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem Description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "cancelled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cancelled At"
+          },
+          "workshop": {
+            "$ref": "#/components/schemas/AppointmentWorkshop"
+          },
+          "service_type": {
+            "$ref": "#/components/schemas/ServiceTypeRead"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "bay": {
+            "$ref": "#/components/schemas/AppointmentBay"
+          },
+          "client": {
+            "$ref": "#/components/schemas/AppointmentClient"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "start_at",
+          "end_at",
+          "problem_description",
+          "created_at",
+          "cancelled_at",
+          "workshop",
+          "service_type",
+          "vehicle",
+          "bay",
+          "client"
+        ],
+        "title": "StaffAppointmentRead"
       },
       "UserProfileUpdate": {
         "properties": {
@@ -4960,6 +6214,10 @@
     {
       "name": "vehicles",
       "description": "Vehicles owned by the signed in user"
+    },
+    {
+      "name": "appointments",
+      "description": "Availability, bookings for clients and the workshop calendar for staff"
     },
     {
       "name": "admin",

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from app.core.email import RenderedEmail
+from app.core.email import EmailTemplate, RenderedEmail
 
 
 @dataclass(frozen=True)
@@ -10,9 +10,26 @@ class PasswordResetEmailJob:
     reset_url: str
 
 
+@dataclass(frozen=True)
+class EmailJob:
+    template: EmailTemplate
+    recipient: str
+    context: dict[str, str]
+
+
 @dataclass
 class FakeTaskQueue:
     password_reset_emails: list[PasswordResetEmailJob] = field(default_factory=list)
+    emails: list[EmailJob] = field(default_factory=list)
+
+    async def enqueue_email(
+        self,
+        *,
+        template: EmailTemplate,
+        recipient: str,
+        context: dict[str, str],
+    ) -> None:
+        self.emails.append(EmailJob(template=template, recipient=recipient, context=context))
 
     async def enqueue_password_reset_email(
         self,

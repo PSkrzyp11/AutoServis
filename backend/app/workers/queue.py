@@ -3,9 +3,12 @@ from typing import Protocol
 
 from arq.connections import ArqRedis
 
+from app.core.email import EmailTemplate
+
 
 class TaskName(StrEnum):
     SEND_PASSWORD_RESET_EMAIL = "send_password_reset_email"
+    SEND_EMAIL = "send_email"
 
 
 class TaskQueue(Protocol):
@@ -15,6 +18,14 @@ class TaskQueue(Protocol):
         recipient: str,
         full_name: str,
         reset_url: str,
+    ) -> None: ...
+
+    async def enqueue_email(
+        self,
+        *,
+        template: EmailTemplate,
+        recipient: str,
+        context: dict[str, str],
     ) -> None: ...
 
 
@@ -34,4 +45,18 @@ class ArqTaskQueue:
             recipient=recipient,
             full_name=full_name,
             reset_url=reset_url,
+        )
+
+    async def enqueue_email(
+        self,
+        *,
+        template: EmailTemplate,
+        recipient: str,
+        context: dict[str, str],
+    ) -> None:
+        await self._pool.enqueue_job(
+            TaskName.SEND_EMAIL.value,
+            template=template.value,
+            recipient=recipient,
+            context=context,
         )

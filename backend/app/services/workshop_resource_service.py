@@ -13,6 +13,8 @@ from app.schemas.bay import BayCreate, BayUpdate
 from app.schemas.service_type import ServiceTypeCreate, ServiceTypeUpdate
 from app.services.updates import apply_changes
 
+NULLABLE_SERVICE_TYPE_FIELDS = frozenset({"required_bay_type"})
+
 logger = get_logger()
 
 
@@ -81,6 +83,7 @@ class ServiceTypeService:
             duration_minutes=data.duration_minutes,
             base_price_net=data.base_price_net,
             vat_rate=data.vat_rate,
+            required_bay_type=data.required_bay_type,
             is_active=True,
         )
         self._service_types.add(service_type)
@@ -107,6 +110,6 @@ class ServiceTypeService:
             excluded_id=service_type.id,
         ):
             raise service_name_taken_error()
-        apply_changes(service_type, data)
+        apply_changes(service_type, data, nullable_fields=NULLABLE_SERVICE_TYPE_FIELDS)
         await self._session.commit()
         return service_type

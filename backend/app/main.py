@@ -28,6 +28,10 @@ OPENAPI_TAGS = [
         "description": "Public workshop search and workshop management for staff",
     },
     {"name": "vehicles", "description": "Vehicles owned by the signed in user"},
+    {
+        "name": "appointments",
+        "description": "Availability, bookings for clients and the workshop calendar for staff",
+    },
     {"name": "admin", "description": "Platform administration, available to ADMIN only"},
     {"name": "health", "description": "Liveness and readiness probes"},
 ]

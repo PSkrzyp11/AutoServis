@@ -55,6 +55,7 @@ describe("service type form logic", () => {
       duration_minutes: 45,
       base_price_net: "199.00",
       vat_rate: "8.00",
+      required_bay_type: null,
       base_price_gross: "214.92",
       is_active: true,
     });

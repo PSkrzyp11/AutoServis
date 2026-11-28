@@ -13,6 +13,7 @@ from app.models.enums import UserRole
 from app.models.user import User
 from app.models.workshop import Workshop
 from app.schemas.pagination import PageParams
+from app.services.appointment_service import AppointmentService
 from app.services.auth_service import AuthService
 from app.services.password_reset_service import PasswordResetService
 from app.services.user_service import UserService
@@ -71,6 +72,14 @@ def get_vehicle_service(session: SessionDep) -> VehicleService:
     return VehicleService(session)
 
 
+def get_appointment_service(
+    session: SessionDep,
+    settings: SettingsDep,
+    task_queue: TaskQueueDep,
+) -> AppointmentService:
+    return AppointmentService(session, settings, task_queue)
+
+
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
 PasswordResetServiceDep = Annotated[PasswordResetService, Depends(get_password_reset_service)]
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
@@ -82,6 +91,7 @@ WorkshopScheduleServiceDep = Annotated[
 BayServiceDep = Annotated[BayService, Depends(get_bay_service)]
 ServiceTypeServiceDep = Annotated[ServiceTypeService, Depends(get_service_type_service)]
 VehicleServiceDep = Annotated[VehicleService, Depends(get_vehicle_service)]
+AppointmentServiceDep = Annotated[AppointmentService, Depends(get_appointment_service)]
 
 
 async def get_current_user(

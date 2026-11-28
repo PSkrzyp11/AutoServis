@@ -1,0 +1,1 @@
+Przypomnienie: wizyta {{ date }} o {{ start_time }} – {{ workshop_name }}
