@@ -1,5 +1,8 @@
+import uuid
 from dataclasses import asdict, dataclass
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,12 +10,16 @@ from app.core.logging import get_logger
 from app.core.money import PERCENT_DIVISOR, round_money
 from app.core.security import hash_password
 from app.core.text import slugify
+from app.core.time import utc_now
+from app.models.appointment import Appointment
 from app.models.bay import Bay
-from app.models.enums import UserRole
+from app.models.enums import AppointmentStatus, UserRole
+from app.models.service_order import OrderStatusHistory, ServiceOrder
 from app.models.service_type import ServiceType
 from app.models.user import User
 from app.models.vehicle import Vehicle
 from app.models.workshop import Workshop, WorkshopClosure, WorkshopMember
+from app.repositories.order_repository import OrderRepository
 from app.repositories.user_repository import UserRepository
 from app.repositories.vehicle_repository import VehicleRepository
 from app.repositories.workshop_repository import WorkshopRepository
@@ -21,9 +28,12 @@ from app.repositories.workshop_schedule_repository import WorkshopScheduleReposi
 from app.schemas.service_type import ServiceTypeCreate
 from app.schemas.vehicle import VehicleCreate
 from app.schemas.workshop import OpeningHoursUpdate, WorkshopCreate
-from app.seed.schemas import SeedData, SeedPerson, SeedWorkshop
+from app.seed.schemas import SeedData, SeedOrder, SeedPerson, SeedWorkshop
+from app.services.order_workflow import is_closed, path_to
 from app.services.workshop_schedule_service import WorkshopScheduleService
 from app.services.workshop_service import WorkshopService
+
+MAX_HISTORY_STEP = timedelta(hours=3)
 
 logger = get_logger()
 
@@ -37,6 +47,7 @@ class SeedSummary:
     service_types_created: int = 0
     closures_created: int = 0
     vehicles_created: int = 0
+    orders_created: int = 0
 
 
 def adjusted_price(price: Decimal, adjustment_percent: int) -> Decimal:
@@ -53,6 +64,7 @@ class DemoSeeder:
         self._bays = BayRepository(session)
         self._service_types = ServiceTypeRepository(session)
         self._vehicles = VehicleRepository(session)
+        self._orders = OrderRepository(session)
         self._workshop_service = WorkshopService(session)
         self._schedule_service = WorkshopScheduleService(session)
         self._summary = SeedSummary()
@@ -64,6 +76,7 @@ class DemoSeeder:
             client = await self._ensure_user(client_data, UserRole.CLIENT)
             for vehicle_data in client_data.vehicles:
                 await self._ensure_vehicle(client, vehicle_data)
+        await self._seed_orders(data.orders)
         await self._session.commit()
         logger.info("demo_data_seeded", **asdict(self._summary))
         return self._summary
@@ -181,3 +194,78 @@ class DemoSeeder:
         )
         await self._session.flush()
         self._summary.vehicles_created += 1
+
+    async def _seed_orders(self, orders: list[SeedOrder]) -> None:
+        workshops_seeded_now: set[uuid.UUID] = set()
+        for data in orders:
+            workshop = await self._workshops.get_by_slug(slugify(data.workshop))
+            if workshop is None:
+                message = f"Unknown workshop in demo orders: {data.workshop}"
+                raise ValueError(message)
+            if workshop.id not in workshops_seeded_now and await self._orders.workshop_has_orders(
+                workshop.id
+            ):
+                continue
+            workshops_seeded_now.add(workshop.id)
+            await self._create_order(workshop, data)
+
+    async def _create_order(self, workshop: Workshop, data: SeedOrder) -> None:
+        client = await self._users.get_by_email(data.client_email)
+        vehicle = (
+            await self._vehicles.find_active_by_owner_and_plate(client.id, data.plate_number)
+            if client
+            else None
+        )
+        service_type = await self._service_types.get_by_name(workshop.id, data.service)
+        bay = await self._bays.get_by_name(workshop.id, data.bay)
+        mechanic = (
+            await self._users.get_by_email(data.mechanic_email) if data.mechanic_email else None
+        )
+        if client is None or vehicle is None or service_type is None or bay is None:
+            message = f"Demo order references missing data: {data.plate_number}"
+            raise ValueError(message)
+
+        timezone = ZoneInfo(workshop.timezone)
+        local_day = utc_now().astimezone(timezone).date() - timedelta(days=data.days_ago)
+        start_at = datetime.combine(local_day, data.start_time, tzinfo=timezone).astimezone(UTC)
+        appointment = Appointment(
+            workshop_id=workshop.id,
+            bay_id=bay.id,
+            vehicle_id=vehicle.id,
+            client_id=client.id,
+            service_type_id=service_type.id,
+            start_at=start_at,
+            end_at=start_at + timedelta(minutes=service_type.duration_minutes),
+            status=AppointmentStatus.CHECKED_IN,
+            reminder_sent_at=start_at,
+        )
+        self._session.add(appointment)
+        await self._session.flush()
+
+        path = path_to(data.status)
+        step = min(MAX_HISTORY_STEP, (utc_now() - start_at) / len(path))
+        changed_at = [start_at + step * index for index in range(len(path))]
+        order = ServiceOrder(
+            id=uuid.uuid4(),
+            workshop_id=workshop.id,
+            appointment_id=appointment.id,
+            mechanic_id=mechanic.id if mechanic else None,
+            status=data.status,
+            diagnosis=data.diagnosis,
+            status_changed_at=changed_at[-1],
+            closed_at=changed_at[-1] if is_closed(data.status) else None,
+            created_at=start_at,
+        )
+        self._orders.add(order)
+        for index, status in enumerate(path):
+            self._orders.add_history(
+                OrderStatusHistory(
+                    order_id=order.id,
+                    from_status=path[index - 1] if index else None,
+                    to_status=status,
+                    changed_by_id=mechanic.id if mechanic else None,
+                    changed_at=changed_at[index],
+                )
+            )
+        await self._session.flush()
+        self._summary.orders_created += 1

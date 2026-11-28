@@ -14,6 +14,8 @@ from app.core.logging import configure_logging, get_logger
 from app.core.middleware import RequestContextMiddleware
 from app.core.redis import create_redis
 from app.core.sentry import configure_sentry
+from app.ws.hub import RealtimeHub
+from app.ws.manager import ConnectionManager
 
 API_TITLE = "AutoServis API"
 API_VERSION = "0.1.0"
@@ -32,6 +34,12 @@ OPENAPI_TAGS = [
         "name": "appointments",
         "description": "Availability, bookings for clients and the workshop calendar for staff",
     },
+    {
+        "name": "orders",
+        "description": "Service orders with their status workflow for staff and clients",
+    },
+    {"name": "notifications", "description": "In-app notifications of the signed in user"},
+    {"name": "realtime", "description": "Tickets for the realtime WebSocket connection"},
     {"name": "admin", "description": "Platform administration, available to ADMIN only"},
     {"name": "health", "description": "Liveness and readiness probes"},
 ]
@@ -50,10 +58,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.session_factory = create_session_factory(engine)
     app.state.redis = redis
     app.state.arq_pool = arq_pool
+    realtime_hub = RealtimeHub(redis, app.state.realtime_manager)
+    await realtime_hub.start()
     logger.info("application_started", environment=settings.app_env.value)
     try:
         yield
     finally:
+        await realtime_hub.stop()
         await arq_pool.aclose()
         await redis.aclose()
         await engine.dispose()
@@ -72,6 +83,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_tags=OPENAPI_TAGS,
         lifespan=lifespan,
     )
+    app.state.realtime_manager = ConnectionManager()
     app.add_middleware(RequestContextMiddleware)
     register_exception_handlers(app)
     app.include_router(health_router)

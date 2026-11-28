@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, status
 
-from app.api.dependencies import AppointmentServiceDep, StaffWorkshopDep
+from app.api.dependencies import AppointmentServiceDep, CurrentUserDep, StaffWorkshopDep
 from app.models.enums import AppointmentStatus
 from app.schemas.appointment import StaffAppointmentRead
 from app.schemas.errors import error_responses
@@ -38,15 +38,18 @@ async def list_workshop_appointments(
 @router.post(
     "/{appointment_id}/check-in",
     summary="Mark that the vehicle arrived",
+    description="Opens a service order in status RECEIVED and notifies the client.",
     responses=TRANSITION_ERRORS,
 )
 async def check_in_appointment(
     appointment_id: uuid.UUID,
     workshop: StaffWorkshopDep,
+    user: CurrentUserDep,
     appointment_service: AppointmentServiceDep,
 ) -> StaffAppointmentRead:
     appointment = await appointment_service.change_status_by_staff(
         workshop,
+        user,
         appointment_id,
         AppointmentStatus.CHECKED_IN,
     )
@@ -62,10 +65,12 @@ async def check_in_appointment(
 async def mark_no_show(
     appointment_id: uuid.UUID,
     workshop: StaffWorkshopDep,
+    user: CurrentUserDep,
     appointment_service: AppointmentServiceDep,
 ) -> StaffAppointmentRead:
     appointment = await appointment_service.change_status_by_staff(
         workshop,
+        user,
         appointment_id,
         AppointmentStatus.NO_SHOW,
     )
@@ -75,15 +80,18 @@ async def mark_no_show(
 @router.post(
     "/{appointment_id}/cancel",
     summary="Cancel an appointment on behalf of the workshop",
+    description="Only scheduled appointments. After check-in cancel the service order instead.",
     responses=TRANSITION_ERRORS,
 )
 async def cancel_workshop_appointment(
     appointment_id: uuid.UUID,
     workshop: StaffWorkshopDep,
+    user: CurrentUserDep,
     appointment_service: AppointmentServiceDep,
 ) -> StaffAppointmentRead:
     appointment = await appointment_service.change_status_by_staff(
         workshop,
+        user,
         appointment_id,
         AppointmentStatus.CANCELLED,
     )

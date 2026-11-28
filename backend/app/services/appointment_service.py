@@ -33,7 +33,10 @@ from app.services.availability import (
     compute_available_slots,
     local_day_bounds,
 )
+from app.services.order_service import OrderService
+from app.services.outbox import Outbox
 from app.workers.queue import TaskQueue
+from app.ws.events import RealtimeEvent, RealtimeEventType, workshop_channel
 
 BAY_CONSTRAINT = "ex_appointments_bay_id_period"
 VEHICLE_CONSTRAINT = "ex_appointments_vehicle_id_period"
@@ -44,7 +47,7 @@ ALLOWED_STAFF_TRANSITIONS: dict[AppointmentStatus, frozenset[AppointmentStatus]]
     AppointmentStatus.SCHEDULED: frozenset(
         {AppointmentStatus.CHECKED_IN, AppointmentStatus.NO_SHOW, AppointmentStatus.CANCELLED}
     ),
-    AppointmentStatus.CHECKED_IN: frozenset({AppointmentStatus.CANCELLED}),
+    AppointmentStatus.CHECKED_IN: frozenset(),
     AppointmentStatus.CANCELLED: frozenset(),
     AppointmentStatus.NO_SHOW: frozenset(),
 }
@@ -82,10 +85,18 @@ def invalid_transition_error(
 
 
 class AppointmentService:
-    def __init__(self, session: AsyncSession, settings: Settings, task_queue: TaskQueue) -> None:
+    def __init__(
+        self,
+        session: AsyncSession,
+        settings: Settings,
+        task_queue: TaskQueue,
+        outbox: Outbox,
+    ) -> None:
         self._session = session
         self._settings = settings
         self._task_queue = task_queue
+        self._outbox = outbox
+        self._orders = OrderService(session, settings, outbox)
         self._appointments = AppointmentRepository(session)
         self._workshops = WorkshopRepository(session)
         self._schedule = WorkshopScheduleRepository(session)
@@ -130,7 +141,9 @@ class AppointmentService:
                 reminder_sent_at=reminder_sent_at,
             )
             if await self._try_insert(appointment):
+                self._stage_appointment_event(appointment)
                 await self._session.commit()
+                await self._outbox.flush()
                 return await self._finalize_booking(appointment)
         raise self._slot_taken_error()
 
@@ -161,7 +174,7 @@ class AppointmentService:
                 status_code=status.HTTP_409_CONFLICT,
                 details={"deadline_hours": self._settings.client_cancellation_deadline_hours},
             )
-        return await self._apply_status(appointment, AppointmentStatus.CANCELLED, now)
+        return await self._apply_status(appointment, AppointmentStatus.CANCELLED, now, client)
 
     async def list_for_workshop(
         self,
@@ -183,6 +196,7 @@ class AppointmentService:
     async def change_status_by_staff(
         self,
         workshop: Workshop,
+        actor: User,
         appointment_id: uuid.UUID,
         target: AppointmentStatus,
     ) -> Appointment:
@@ -194,18 +208,24 @@ class AppointmentService:
             raise invalid_transition_error(appointment.status, target)
         if target is AppointmentStatus.NO_SHOW and appointment.start_at > now:
             raise invalid_transition_error(appointment.status, target, "appointment_not_started")
-        return await self._apply_status(appointment, target, now)
+        return await self._apply_status(appointment, target, now, actor)
 
     async def _apply_status(
         self,
         appointment: Appointment,
         target: AppointmentStatus,
         now: datetime,
+        actor: User,
     ) -> Appointment:
         appointment.status = target
         if target is AppointmentStatus.CANCELLED:
             appointment.cancelled_at = now
+        if target is AppointmentStatus.CHECKED_IN:
+            await self._session.flush()
+            await self._orders.stage_opening(appointment, actor)
+        self._stage_appointment_event(appointment)
         await self._session.commit()
+        await self._outbox.flush()
         logger.info(
             "appointment_status_changed",
             appointment_id=str(appointment.id),
@@ -334,6 +354,16 @@ class AppointmentService:
         if appointment is None:
             raise NotFoundError("Appointment not found")
         return appointment
+
+    def _stage_appointment_event(self, appointment: Appointment) -> None:
+        self._outbox.add_event(
+            workshop_channel(appointment.workshop_id),
+            RealtimeEvent(
+                type=RealtimeEventType.APPOINTMENT_CHANGED,
+                entity_id=appointment.id,
+                workshop_id=appointment.workshop_id,
+            ),
+        )
 
     @staticmethod
     def _slot_taken_error() -> ConflictError:

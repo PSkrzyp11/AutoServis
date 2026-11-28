@@ -28,6 +28,25 @@ class AppointmentStatus(StrEnum):
 ACTIVE_APPOINTMENT_STATUSES = frozenset({AppointmentStatus.SCHEDULED, AppointmentStatus.CHECKED_IN})
 
 
+class OrderStatus(StrEnum):
+    RECEIVED = "RECEIVED"
+    DIAGNOSIS = "DIAGNOSIS"
+    WAITING_FOR_APPROVAL = "WAITING_FOR_APPROVAL"
+    WAITING_FOR_PARTS = "WAITING_FOR_PARTS"
+    IN_PROGRESS = "IN_PROGRESS"
+    READY = "READY"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+
+CLOSED_ORDER_STATUSES = frozenset({OrderStatus.COMPLETED, OrderStatus.CANCELLED})
+
+
+class NotificationType(StrEnum):
+    ORDER_STATUS_CHANGED = "ORDER_STATUS_CHANGED"
+    ORDER_ASSIGNED = "ORDER_ASSIGNED"
+
+
 class IsoWeekday(IntEnum):
     MONDAY = 1
     TUESDAY = 2

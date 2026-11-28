@@ -1,0 +1,23 @@
+{% macro label(status) -%}
+{{ {
+  "RECEIVED": "Przyjęte",
+  "DIAGNOSIS": "Diagnoza",
+  "WAITING_FOR_APPROVAL": "Czeka na Twoją akceptację",
+  "WAITING_FOR_PARTS": "Czeka na części",
+  "IN_PROGRESS": "W naprawie",
+  "READY": "Gotowe do odbioru",
+  "COMPLETED": "Zakończone",
+  "CANCELLED": "Anulowane",
+}[status] }}
+{%- endmacro %}
+{% macro message(status) -%}
+{% if status == "WAITING_FOR_APPROVAL" -%}
+Diagnoza Twojego auta jest gotowa i czeka na Twoją akceptację. Szczegóły znajdziesz w zakładce Moje zlecenia.
+{%- elif status == "READY" -%}
+Twoje auto jest gotowe do odbioru. Zapraszamy do warsztatu w godzinach otwarcia.
+{%- elif status == "CANCELLED" -%}
+Zlecenie zostało anulowane. Jeśli masz pytania, zadzwoń do warsztatu.
+{%- else -%}
+Status zlecenia zmienił się na: {{ label(status) }}.
+{%- endif %}
+{%- endmacro %}

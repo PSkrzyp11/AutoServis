@@ -15,9 +15,9 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engin
 from sqlalchemy.pool import NullPool
 
 from app.core.config import Environment, Settings, get_settings
-from app.core.dependencies import get_redis, get_session, get_task_queue
+from app.core.dependencies import get_event_publisher, get_redis, get_session, get_task_queue
 from app.main import create_app
-from tests.fakes import FakeTaskQueue
+from tests.fakes import FakeEventPublisher, FakeTaskQueue
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_TEST_DATABASE_URL = (
@@ -96,17 +96,24 @@ def task_queue() -> FakeTaskQueue:
 
 
 @pytest.fixture
+def event_publisher() -> FakeEventPublisher:
+    return FakeEventPublisher()
+
+
+@pytest.fixture
 def app(
     settings: Settings,
     db_session: AsyncSession,
     redis: Redis,
     task_queue: FakeTaskQueue,
+    event_publisher: FakeEventPublisher,
 ) -> FastAPI:
     application = create_app(settings)
     application.dependency_overrides[get_settings] = lambda: settings
     application.dependency_overrides[get_session] = lambda: db_session
     application.dependency_overrides[get_redis] = lambda: redis
     application.dependency_overrides[get_task_queue] = lambda: task_queue
+    application.dependency_overrides[get_event_publisher] = lambda: event_publisher
     return application
 
 

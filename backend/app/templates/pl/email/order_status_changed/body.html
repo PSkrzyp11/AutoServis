@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% import "order_status.txt" as order_status %}
+{% block title %}Zlecenie nr {{ order_number }}{% endblock %}
+{% block content %}
+<p style="margin:0 0 16px;">Cześć {{ full_name }},</p>
+<p style="margin:0 0 16px;">{{ order_status.message(status) }}</p>
+<table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 24px;border-collapse:collapse;font-size:15px;">
+  <tr>
+    <td style="padding:4px 16px 4px 0;color:#71717a;">Zlecenie</td>
+    <td style="padding:4px 0;"><strong>nr {{ order_number }}</strong></td>
+  </tr>
+  <tr>
+    <td style="padding:4px 16px 4px 0;color:#71717a;">Status</td>
+    <td style="padding:4px 0;">{{ order_status.label(status) }}</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 16px 4px 0;color:#71717a;">Usługa</td>
+    <td style="padding:4px 0;">{{ service_name }}</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 16px 4px 0;color:#71717a;">Pojazd</td>
+    <td style="padding:4px 0;">{{ vehicle }}</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 16px 4px 0;color:#71717a;">Warsztat</td>
+    <td style="padding:4px 0;">{{ workshop_name }}, tel. {{ workshop_phone }}</td>
+  </tr>
+</table>
+{% endblock %}

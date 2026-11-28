@@ -119,6 +119,9 @@ flowchart LR
     API -->|enqueue jobs| Redis
     Worker[ARQ worker] -->|consume jobs| Redis
     Worker --> Mailpit[SMTP / Mailpit]
+    API -->|publish events| Redis
+    Redis -->|pub/sub| API
+    Browser <-->|WebSocket| API
 ```
 
 ### Backend layers
@@ -132,6 +135,7 @@ backend/app
 ├── schemas        Pydantic request and response models
 ├── core           configuration, security, errors, logging, infrastructure clients
 ├── workers        ARQ background tasks and task queue abstraction
+├── ws             WebSocket gateway, connection manager and Redis pub/sub hub
 └── templates/pl   Polish email and document templates
 ```
 
@@ -181,6 +185,21 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 - The booking page shows the next three weeks with closed days disabled. When someone takes the chosen slot first, the API returns `APPOINTMENT_SLOT_TAKEN` and the page reloads free slots.
 - The workshop calendar is a grid with one column per bay and 15 minute rows on larger screens and a list grouped by bay on phones.
 
+### Service orders
+
+- Checking a vehicle in on the workshop calendar opens a service order in status `RECEIVED` in the same transaction. A checked-in appointment can no longer be cancelled; the order is cancelled instead.
+- Order statuses follow an explicit transition map in `app/services/order_workflow.py`: `RECEIVED → DIAGNOSIS → WAITING_FOR_APPROVAL → (WAITING_FOR_PARTS →) IN_PROGRESS → READY → COMPLETED`, back from `WAITING_FOR_APPROVAL` to `DIAGNOSIS` after a rejected estimate, and `CANCELLED` from every open status except `READY`. Any other change returns `INVALID_STATUS_TRANSITION`. Asking the client for approval requires a diagnosis.
+- Every change is stored in `order_status_history` with the author and an optional note. Clients see the history without internal notes.
+- A status change states the status the user saw (`expected_status`). The order row is locked with `SELECT ... FOR UPDATE`, so when two people move the same card at once the second one gets `ORDER_STATUS_CONFLICT` instead of silently overwriting the first change. A test runs both changes in parallel transactions.
+- Mechanics see all orders of their workshop but change only orders assigned to them or unassigned ones; moving an unassigned order assigns it to them. Managers can change any order and assign mechanics. Each order in the API lists the transitions the signed in user may perform, so the frontend does not duplicate the rules.
+- Clients receive an in-app notification for every status change and an email (Polish template) when the order waits for their approval, is ready for pickup or is cancelled. Mechanics are notified when a manager assigns them an order.
+
+### Realtime updates
+
+- The browser asks `POST /api/v1/realtime/tickets` for a one-time ticket (stored hashed in Redis for 30 seconds) and opens `ws://.../api/v1/realtime/socket?ticket=...`. The access token never appears in a URL, and the `Origin` header is checked against an allow list.
+- A ticket lists the channels the user may listen to: their own notification channel and the channels of workshops they work in.
+- Services publish small events (`order.changed`, `appointment.changed`, `notification.created`) to Redis only after the database transaction commits, through an outbox collected during the request. Clients react by reloading data through the REST API.
+- Every API process subscribes to `realtime:*` in Redis and forwards messages to its own WebSocket connections, so events reach users connected to any process.
 ### Internationalization
 
 - UI texts live only in `frontend/messages/pl.json` with English keys such as `auth.login.submit`. The structure is ready for additional locales.
@@ -203,7 +222,7 @@ Validation errors use the `VALIDATION_ERROR` code and list invalid fields in `de
 1. ✅ Monorepo foundation, Docker Compose, configuration, health checks, CI, i18n, authentication and RBAC
 2. ✅ Workshops, vehicles, service bays and demo seed data
 3. ✅ Bookings and calendar with database-level double booking protection
-4. Repair orders, state machine, Kanban board, WebSockets, notifications
+4. 🚧 Repair orders, state machine, Kanban board, WebSockets, notifications (backend done)
 5. Cost estimates, inventory, chat with photo attachments
 6. PDF invoices, Stripe payments, background emails
 7. AI diagnostic assistant and workshop manager dashboard

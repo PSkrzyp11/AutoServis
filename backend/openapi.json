@@ -2088,6 +2088,7 @@
           "appointments"
         ],
         "summary": "Mark that the vehicle arrived",
+        "description": "Opens a service order in status RECEIVED and notifies the client.",
         "operationId": "check_in_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__check_in_post",
         "security": [
           {
@@ -2285,6 +2286,7 @@
           "appointments"
         ],
         "summary": "Cancel an appointment on behalf of the workshop",
+        "description": "Only scheduled appointments. After check-in cancel the service order instead.",
         "operationId": "cancel_workshop_appointment_api_v1_workshops__workshop_id__appointments__appointment_id__cancel_post",
         "security": [
           {
@@ -2736,6 +2738,1306 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/board": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Get the order board",
+        "description": "All open orders of the workshop and orders closed within the configured number of days, ordered by the time of the last status change.",
+        "operationId": "get_order_board_api_v1_workshops__workshop_id__orders_board_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderBoard"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "List workshop orders",
+        "description": "Paginated list with status and mechanic filters.",
+        "operationId": "list_workshop_orders_api_v1_workshops__workshop_id__orders_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderStatus"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only orders in these statuses",
+              "title": "Status"
+            },
+            "description": "Only orders in these statuses"
+          },
+          {
+            "name": "mechanic_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only orders assigned to this person",
+              "title": "Mechanic Id"
+            },
+            "description": "Only orders assigned to this person"
+          },
+          {
+            "name": "unassigned",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Only orders without a mechanic",
+              "default": false,
+              "title": "Unassigned"
+            },
+            "description": "Only orders without a mechanic"
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/OrderSortField",
+              "description": "Field used for sorting",
+              "default": "created_at"
+            },
+            "description": "Field used for sorting"
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SortOrder",
+              "description": "Sorting direction",
+              "default": "desc"
+            },
+            "description": "Sorting direction"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_StaffOrderSummary_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Get an order with its status history",
+        "operationId": "get_workshop_order_api_v1_workshops__workshop_id__orders__order_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/status": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Change the order status",
+        "description": "Moves the order to an allowed status. The request must state the status the client saw; if it changed in the meantime the API returns ORDER_STATUS_CONFLICT. A mechanic can move orders assigned to them or unassigned ones, which assigns the order to them.",
+        "operationId": "change_order_status_api_v1_workshops__workshop_id__orders__order_id__status_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderStatusChange"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/diagnosis": {
+      "put": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Save the diagnosis",
+        "operationId": "update_order_diagnosis_api_v1_workshops__workshop_id__orders__order_id__diagnosis_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiagnosisUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/mechanic": {
+      "put": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Assign a mechanic",
+        "description": "Available to managers. The assigned person receives a notification.",
+        "operationId": "assign_order_mechanic_api_v1_workshops__workshop_id__orders__order_id__mechanic_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MechanicAssignment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/claim": {
+      "post": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Take an unassigned order",
+        "operationId": "claim_order_api_v1_workshops__workshop_id__orders__order_id__claim_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          },
+          {
+            "name": "workshop_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Workshop Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The request conflicts with the current state of the resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/mine": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "List my service orders",
+        "description": "Orders opened for vehicles of the signed in client, newest first.",
+        "operationId": "list_my_orders_api_v1_orders_mine_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/OrderScope",
+              "description": "Open or closed orders",
+              "default": "active"
+            },
+            "description": "Open or closed orders"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ClientOrderRead_"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Get my service order",
+        "description": "Includes the diagnosis and the status history without internal notes.",
+        "operationId": "get_my_order_api_v1_orders__order_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientOrderDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "List my notifications",
+        "description": "Newest first, with the number of unread notifications.",
+        "operationId": "list_notifications_api_v1_notifications_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "unread_only",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Only unread notifications",
+              "default": false,
+              "title": "Unread Only"
+            },
+            "description": "Only unread notifications"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of items to return",
+              "default": 20,
+              "title": "Limit"
+            },
+            "description": "Maximum number of items to return"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of items to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of items to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationPage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Count my unread notifications",
+        "operationId": "count_unread_notifications_api_v1_notifications_unread_count_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadNotificationCount"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Mark a notification as read",
+        "operationId": "mark_notification_read_api_v1_notifications__notification_id__read_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Notification Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatusChangedNotification"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OrderAssignedNotification"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "ORDER_STATUS_CHANGED": "#/components/schemas/OrderStatusChangedNotification",
+                      "ORDER_ASSIGNED": "#/components/schemas/OrderAssignedNotification"
+                    }
+                  },
+                  "title": "Response Mark Notification Read Api V1 Notifications  Notification Id  Read Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Mark all my notifications as read",
+        "operationId": "mark_all_notifications_read_api_v1_notifications_read_all_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/realtime/tickets": {
+      "post": {
+        "tags": [
+          "realtime"
+        ],
+        "summary": "Get a ticket for the realtime connection",
+        "description": "Returns a one-time ticket valid for a few seconds. Connect to the WebSocket `/api/v1/realtime/socket?ticket=...` to receive events about your notifications and about orders and appointments of workshops you work in. Events only say what changed, so clients reload the data through the REST API.",
+        "operationId": "create_realtime_ticket_api_v1_realtime_tickets_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtimeTicketRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is missing, invalid or expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated user is not allowed to perform this action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request payload or parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       }
     },
     "/api/v1/vehicles": {
@@ -4223,6 +5525,29 @@
         ],
         "title": "AppointmentCreate"
       },
+      "AppointmentOrder": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status"
+        ],
+        "title": "AppointmentOrder"
+      },
       "AppointmentRead": {
         "properties": {
           "id": {
@@ -4282,6 +5607,17 @@
           },
           "bay": {
             "$ref": "#/components/schemas/AppointmentBay"
+          },
+          "order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AppointmentOrder"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Service order opened at check-in"
           }
         },
         "type": "object",
@@ -4296,7 +5632,8 @@
           "workshop",
           "service_type",
           "vehicle",
-          "bay"
+          "bay",
+          "order"
         ],
         "title": "AppointmentRead"
       },
@@ -4519,6 +5856,221 @@
         "type": "object",
         "title": "BayUpdate"
       },
+      "ClientOrderDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "status_changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Status Changed At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "workshop": {
+            "$ref": "#/components/schemas/AppointmentWorkshop"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "service": {
+            "$ref": "#/components/schemas/OrderServiceType"
+          },
+          "appointment_start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Appointment Start At"
+          },
+          "mechanic": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderPerson"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnosis"
+          },
+          "problem_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem Description"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/ClientOrderHistoryEntry"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "status_changed_at",
+          "created_at",
+          "closed_at",
+          "workshop",
+          "vehicle",
+          "service",
+          "appointment_start_at",
+          "mechanic",
+          "diagnosis",
+          "problem_description",
+          "history"
+        ],
+        "title": "ClientOrderDetail"
+      },
+      "ClientOrderHistoryEntry": {
+        "properties": {
+          "from_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "to_status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Changed At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "from_status",
+          "to_status",
+          "changed_at"
+        ],
+        "title": "ClientOrderHistoryEntry"
+      },
+      "ClientOrderRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "status_changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Status Changed At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "workshop": {
+            "$ref": "#/components/schemas/AppointmentWorkshop"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "service": {
+            "$ref": "#/components/schemas/OrderServiceType"
+          },
+          "appointment_start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Appointment Start At"
+          },
+          "mechanic": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderPerson"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "status_changed_at",
+          "created_at",
+          "closed_at",
+          "workshop",
+          "vehicle",
+          "service",
+          "appointment_start_at",
+          "mechanic"
+        ],
+        "title": "ClientOrderRead"
+      },
       "ClosureCreate": {
         "properties": {
           "closed_on": {
@@ -4622,6 +6174,22 @@
         ],
         "title": "DayAvailability"
       },
+      "DiagnosisUpdate": {
+        "properties": {
+          "diagnosis": {
+            "type": "string",
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Diagnosis"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "diagnosis"
+        ],
+        "title": "DiagnosisUpdate"
+      },
       "ErrorBody": {
         "properties": {
           "code": {
@@ -4674,6 +6242,12 @@
           "VEHICLE_ALREADY_BOOKED",
           "CANCELLATION_TOO_LATE",
           "INVALID_STATUS_TRANSITION",
+          "ORDER_STATUS_CONFLICT",
+          "DIAGNOSIS_REQUIRED",
+          "ORDER_CLOSED",
+          "ORDER_NOT_ASSIGNED_TO_YOU",
+          "ORDER_ALREADY_ASSIGNED",
+          "ASSIGNEE_NOT_IN_WORKSHOP",
           "NOT_FOUND",
           "METHOD_NOT_ALLOWED",
           "RATE_LIMITED",
@@ -4752,6 +6326,81 @@
         ],
         "title": "LoginRequest"
       },
+      "MechanicAssignment": {
+        "properties": {
+          "mechanic_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mechanic Id",
+            "description": "Mechanic or manager of this workshop, or null to unassign"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "mechanic_id"
+        ],
+        "title": "MechanicAssignment"
+      },
+      "NotificationPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/OrderStatusChangedNotification"
+                },
+                {
+                  "$ref": "#/components/schemas/OrderAssignedNotification"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "type",
+                "mapping": {
+                  "ORDER_ASSIGNED": "#/components/schemas/OrderAssignedNotification",
+                  "ORDER_STATUS_CHANGED": "#/components/schemas/OrderStatusChangedNotification"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of notifications matching the filters"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "unread_count": {
+            "type": "integer",
+            "title": "Unread Count",
+            "description": "Number of unread notifications of the user"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "unread_count"
+        ],
+        "title": "NotificationPage"
+      },
       "OpeningHoursEntry": {
         "properties": {
           "weekday": {
@@ -4799,6 +6448,442 @@
         ],
         "title": "OpeningHoursUpdate"
       },
+      "OrderAppointment": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start At"
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End At"
+          },
+          "bay_name": {
+            "type": "string",
+            "title": "Bay Name"
+          },
+          "problem_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Problem Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "start_at",
+          "end_at",
+          "bay_name",
+          "problem_description"
+        ],
+        "title": "OrderAppointment"
+      },
+      "OrderAssignedNotification": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "read_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Read At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "type": {
+            "type": "string",
+            "const": "ORDER_ASSIGNED",
+            "title": "Type"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/OrderAssignedPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "read_at",
+          "created_at",
+          "type",
+          "payload"
+        ],
+        "title": "OrderAssignedNotification"
+      },
+      "OrderAssignedPayload": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Order Id"
+          },
+          "order_number": {
+            "type": "integer",
+            "title": "Order Number"
+          },
+          "workshop_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Workshop Id"
+          },
+          "vehicle": {
+            "type": "string",
+            "title": "Vehicle",
+            "description": "Make, model and plate number"
+          },
+          "assigned_by": {
+            "type": "string",
+            "title": "Assigned By",
+            "description": "Full name of the person who assigned the order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "order_number",
+          "workshop_id",
+          "vehicle",
+          "assigned_by"
+        ],
+        "title": "OrderAssignedPayload"
+      },
+      "OrderBoard": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StaffOrderSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "closed_since": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Closed Since",
+            "description": "Completed and cancelled orders closed before this moment are left out"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "closed_since"
+        ],
+        "title": "OrderBoard"
+      },
+      "OrderClient": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name",
+          "email",
+          "phone"
+        ],
+        "title": "OrderClient"
+      },
+      "OrderHistoryEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "from_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Empty for the entry created with the order"
+          },
+          "to_status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Changed At"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "changed_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderPerson"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "from_status",
+          "to_status",
+          "changed_at",
+          "note",
+          "changed_by"
+        ],
+        "title": "OrderHistoryEntry"
+      },
+      "OrderPerson": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name"
+        ],
+        "title": "OrderPerson"
+      },
+      "OrderScope": {
+        "type": "string",
+        "enum": [
+          "active",
+          "closed"
+        ],
+        "title": "OrderScope"
+      },
+      "OrderServiceType": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "duration_minutes": {
+            "type": "integer",
+            "title": "Duration Minutes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "duration_minutes"
+        ],
+        "title": "OrderServiceType"
+      },
+      "OrderSortField": {
+        "type": "string",
+        "enum": [
+          "number",
+          "created_at",
+          "status_changed_at"
+        ],
+        "title": "OrderSortField"
+      },
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "RECEIVED",
+          "DIAGNOSIS",
+          "WAITING_FOR_APPROVAL",
+          "WAITING_FOR_PARTS",
+          "IN_PROGRESS",
+          "READY",
+          "COMPLETED",
+          "CANCELLED"
+        ],
+        "title": "OrderStatus"
+      },
+      "OrderStatusChange": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus",
+            "description": "Target status"
+          },
+          "expected_status": {
+            "$ref": "#/components/schemas/OrderStatus",
+            "description": "Status the client saw; a different current status returns a conflict"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Optional note kept in the history"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "expected_status"
+        ],
+        "title": "OrderStatusChange"
+      },
+      "OrderStatusChangedNotification": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "read_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Read At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "type": {
+            "type": "string",
+            "const": "ORDER_STATUS_CHANGED",
+            "title": "Type"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/OrderStatusChangedPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "read_at",
+          "created_at",
+          "type",
+          "payload"
+        ],
+        "title": "OrderStatusChangedNotification"
+      },
+      "OrderStatusChangedPayload": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Order Id"
+          },
+          "order_number": {
+            "type": "integer",
+            "title": "Order Number"
+          },
+          "workshop_name": {
+            "type": "string",
+            "title": "Workshop Name"
+          },
+          "vehicle": {
+            "type": "string",
+            "title": "Vehicle",
+            "description": "Make, model and plate number"
+          },
+          "from_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "to_status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id",
+          "order_number",
+          "workshop_name",
+          "vehicle",
+          "from_status",
+          "to_status"
+        ],
+        "title": "OrderStatusChangedPayload"
+      },
       "Page_AppointmentRead_": {
         "properties": {
           "items": {
@@ -4832,6 +6917,74 @@
           "offset"
         ],
         "title": "Page[AppointmentRead]"
+      },
+      "Page_ClientOrderRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ClientOrderRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of items matching the filters"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of items returned in this page"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Number of items skipped before this page"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[ClientOrderRead]"
+      },
+      "Page_StaffOrderSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StaffOrderSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "description": "Total number of items matching the filters"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of items returned in this page"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Number of items skipped before this page"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[StaffOrderSummary]"
       },
       "Page_UserRead_": {
         "properties": {
@@ -5009,6 +7162,25 @@
           "email"
         ],
         "title": "PasswordResetRequest"
+      },
+      "RealtimeTicketRead": {
+        "properties": {
+          "ticket": {
+            "type": "string",
+            "title": "Ticket",
+            "description": "One-time ticket for the realtime WebSocket connection"
+          },
+          "expires_in_seconds": {
+            "type": "integer",
+            "title": "Expires In Seconds"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ticket",
+          "expires_in_seconds"
+        ],
+        "title": "RealtimeTicketRead"
       },
       "RegisterRequest": {
         "properties": {
@@ -5334,6 +7506,17 @@
           "bay": {
             "$ref": "#/components/schemas/AppointmentBay"
           },
+          "order": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AppointmentOrder"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Service order opened at check-in"
+          },
           "client": {
             "$ref": "#/components/schemas/AppointmentClient"
           }
@@ -5351,9 +7534,223 @@
           "service_type",
           "vehicle",
           "bay",
+          "order",
           "client"
         ],
         "title": "StaffAppointmentRead"
+      },
+      "StaffOrderDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number",
+            "description": "Sequential order number shown to people"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "status_changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Status Changed At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "has_diagnosis": {
+            "type": "boolean",
+            "title": "Has Diagnosis"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "client": {
+            "$ref": "#/components/schemas/OrderClient"
+          },
+          "service": {
+            "$ref": "#/components/schemas/OrderServiceType"
+          },
+          "mechanic": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderPerson"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "appointment": {
+            "$ref": "#/components/schemas/OrderAppointment"
+          },
+          "allowed_transitions": {
+            "items": {
+              "$ref": "#/components/schemas/OrderStatus"
+            },
+            "type": "array",
+            "title": "Allowed Transitions",
+            "description": "Statuses the signed in user may move this order to right now"
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnosis"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/OrderHistoryEntry"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "status_changed_at",
+          "created_at",
+          "closed_at",
+          "has_diagnosis",
+          "vehicle",
+          "client",
+          "service",
+          "mechanic",
+          "appointment",
+          "allowed_transitions",
+          "diagnosis",
+          "history"
+        ],
+        "title": "StaffOrderDetail"
+      },
+      "StaffOrderSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number",
+            "description": "Sequential order number shown to people"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "status_changed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Status Changed At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Closed At"
+          },
+          "has_diagnosis": {
+            "type": "boolean",
+            "title": "Has Diagnosis"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/AppointmentVehicle"
+          },
+          "client": {
+            "$ref": "#/components/schemas/OrderClient"
+          },
+          "service": {
+            "$ref": "#/components/schemas/OrderServiceType"
+          },
+          "mechanic": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderPerson"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "appointment": {
+            "$ref": "#/components/schemas/OrderAppointment"
+          },
+          "allowed_transitions": {
+            "items": {
+              "$ref": "#/components/schemas/OrderStatus"
+            },
+            "type": "array",
+            "title": "Allowed Transitions",
+            "description": "Statuses the signed in user may move this order to right now"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status",
+          "status_changed_at",
+          "created_at",
+          "closed_at",
+          "has_diagnosis",
+          "vehicle",
+          "client",
+          "service",
+          "mechanic",
+          "appointment",
+          "allowed_transitions"
+        ],
+        "title": "StaffOrderSummary"
+      },
+      "UnreadNotificationCount": {
+        "properties": {
+          "unread_count": {
+            "type": "integer",
+            "title": "Unread Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "unread_count"
+        ],
+        "title": "UnreadNotificationCount"
       },
       "UserProfileUpdate": {
         "properties": {
@@ -6218,6 +8615,18 @@
     {
       "name": "appointments",
       "description": "Availability, bookings for clients and the workshop calendar for staff"
+    },
+    {
+      "name": "orders",
+      "description": "Service orders with their status workflow for staff and clients"
+    },
+    {
+      "name": "notifications",
+      "description": "In-app notifications of the signed in user"
+    },
+    {
+      "name": "realtime",
+      "description": "Tickets for the realtime WebSocket connection"
     },
     {
       "name": "admin",

@@ -6,7 +6,7 @@ from typing import Annotated
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, StringConstraints
 
 from app.models.appointment import PROBLEM_DESCRIPTION_MAX_LENGTH
-from app.models.enums import AppointmentStatus, UserRole
+from app.models.enums import AppointmentStatus, OrderStatus, UserRole
 from app.schemas.service_type import ServiceTypeRead
 
 ProblemDescription = Annotated[
@@ -90,6 +90,14 @@ class AppointmentClient(BaseModel):
     role: UserRole
 
 
+class AppointmentOrder(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    number: int
+    status: OrderStatus
+
+
 class AppointmentRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -104,6 +112,7 @@ class AppointmentRead(BaseModel):
     service_type: ServiceTypeRead
     vehicle: AppointmentVehicle
     bay: AppointmentBay
+    order: AppointmentOrder | None = Field(description="Service order opened at check-in")
 
 
 class StaffAppointmentRead(AppointmentRead):

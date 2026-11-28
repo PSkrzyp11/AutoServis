@@ -479,6 +479,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workshops/{workshop_id}/orders/board": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_order_board_api_v1_workshops__workshop_id__orders_board_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_workshop_orders_api_v1_workshops__workshop_id__orders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_workshop_order_api_v1_workshops__workshop_id__orders__order_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["change_order_status_api_v1_workshops__workshop_id__orders__order_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/diagnosis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["update_order_diagnosis_api_v1_workshops__workshop_id__orders__order_id__diagnosis_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/mechanic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["assign_order_mechanic_api_v1_workshops__workshop_id__orders__order_id__mechanic_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workshops/{workshop_id}/orders/{order_id}/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["claim_order_api_v1_workshops__workshop_id__orders__order_id__claim_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_my_orders_api_v1_orders_mine_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/{order_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_my_order_api_v1_orders__order_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["list_notifications_api_v1_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["count_unread_notifications_api_v1_notifications_unread_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{notification_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["mark_notification_read_api_v1_notifications__notification_id__read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["mark_all_notifications_read_api_v1_notifications_read_all_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/realtime/tickets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_realtime_ticket_api_v1_realtime_tickets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vehicles": {
         parameters: {
             query?: never;
@@ -648,6 +872,11 @@ export interface components {
             start_at: string;
             problem_description?: string | null;
         };
+        AppointmentOrder: {
+            id: string;
+            number: number;
+            status: components["schemas"]["OrderStatus"];
+        };
         AppointmentRead: {
             id: string;
             status: components["schemas"]["AppointmentStatus"];
@@ -660,6 +889,7 @@ export interface components {
             service_type: components["schemas"]["ServiceTypeRead"];
             vehicle: components["schemas"]["AppointmentVehicle"];
             bay: components["schemas"]["AppointmentBay"];
+            order: components["schemas"]["AppointmentOrder"] | null;
         };
         AppointmentScope: "upcoming" | "past";
         AppointmentStatus: "SCHEDULED" | "CHECKED_IN" | "CANCELLED" | "NO_SHOW";
@@ -699,6 +929,40 @@ export interface components {
             type?: components["schemas"]["BayType"] | null;
             is_active?: boolean | null;
         };
+        ClientOrderDetail: {
+            id: string;
+            number: number;
+            status: components["schemas"]["OrderStatus"];
+            status_changed_at: string;
+            created_at: string;
+            closed_at: string | null;
+            workshop: components["schemas"]["AppointmentWorkshop"];
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            service: components["schemas"]["OrderServiceType"];
+            appointment_start_at: string;
+            mechanic: components["schemas"]["OrderPerson"] | null;
+            diagnosis: string | null;
+            problem_description: string | null;
+            history: components["schemas"]["ClientOrderHistoryEntry"][];
+        };
+        ClientOrderHistoryEntry: {
+            from_status: components["schemas"]["OrderStatus"] | null;
+            to_status: components["schemas"]["OrderStatus"];
+            changed_at: string;
+        };
+        ClientOrderRead: {
+            id: string;
+            number: number;
+            status: components["schemas"]["OrderStatus"];
+            status_changed_at: string;
+            created_at: string;
+            closed_at: string | null;
+            workshop: components["schemas"]["AppointmentWorkshop"];
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            service: components["schemas"]["OrderServiceType"];
+            appointment_start_at: string;
+            mechanic: components["schemas"]["OrderPerson"] | null;
+        };
         ClosureCreate: {
             closed_on: string;
             reason?: string | null;
@@ -715,6 +979,9 @@ export interface components {
             duration_minutes: number;
             slots: components["schemas"]["AvailableSlotRead"][];
         };
+        DiagnosisUpdate: {
+            diagnosis: string;
+        };
         ErrorBody: {
             code: components["schemas"]["ErrorCode"];
             message: string;
@@ -722,7 +989,7 @@ export interface components {
                 [key: string]: components["schemas"]["JsonValue"];
             };
         };
-        ErrorCode: "VALIDATION_ERROR" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "TOKEN_EXPIRED" | "FORBIDDEN" | "USER_INACTIVE" | "EMAIL_ALREADY_REGISTERED" | "SELF_MODIFICATION_FORBIDDEN" | "WORKSHOP_ACCESS_DENIED" | "USER_NOT_STAFF" | "MEMBER_ALREADY_EXISTS" | "CLOSURE_ALREADY_EXISTS" | "BAY_NAME_TAKEN" | "SERVICE_NAME_TAKEN" | "VIN_ALREADY_REGISTERED" | "SERVICE_NOT_AVAILABLE" | "SLOT_NOT_AVAILABLE" | "APPOINTMENT_SLOT_TAKEN" | "VEHICLE_ALREADY_BOOKED" | "CANCELLATION_TOO_LATE" | "INVALID_STATUS_TRANSITION" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "RATE_LIMITED" | "HTTP_ERROR" | "INTERNAL_ERROR";
+        ErrorCode: "VALIDATION_ERROR" | "UNAUTHORIZED" | "INVALID_CREDENTIALS" | "INVALID_TOKEN" | "TOKEN_EXPIRED" | "FORBIDDEN" | "USER_INACTIVE" | "EMAIL_ALREADY_REGISTERED" | "SELF_MODIFICATION_FORBIDDEN" | "WORKSHOP_ACCESS_DENIED" | "USER_NOT_STAFF" | "MEMBER_ALREADY_EXISTS" | "CLOSURE_ALREADY_EXISTS" | "BAY_NAME_TAKEN" | "SERVICE_NAME_TAKEN" | "VIN_ALREADY_REGISTERED" | "SERVICE_NOT_AVAILABLE" | "SLOT_NOT_AVAILABLE" | "APPOINTMENT_SLOT_TAKEN" | "VEHICLE_ALREADY_BOOKED" | "CANCELLATION_TOO_LATE" | "INVALID_STATUS_TRANSITION" | "ORDER_STATUS_CONFLICT" | "DIAGNOSIS_REQUIRED" | "ORDER_CLOSED" | "ORDER_NOT_ASSIGNED_TO_YOU" | "ORDER_ALREADY_ASSIGNED" | "ASSIGNEE_NOT_IN_WORKSHOP" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "RATE_LIMITED" | "HTTP_ERROR" | "INTERNAL_ERROR";
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
         };
@@ -738,6 +1005,16 @@ export interface components {
             email: string;
             password: string;
         };
+        MechanicAssignment: {
+            mechanic_id: string | null;
+        };
+        NotificationPage: {
+            items: (components["schemas"]["OrderStatusChangedNotification"] | components["schemas"]["OrderAssignedNotification"])[];
+            total: number;
+            limit: number;
+            offset: number;
+            unread_count: number;
+        };
         OpeningHoursEntry: {
             weekday: components["schemas"]["IsoWeekday"];
             opens_at: string;
@@ -746,8 +1023,91 @@ export interface components {
         OpeningHoursUpdate: {
             days: components["schemas"]["OpeningHoursEntry"][];
         };
+        OrderAppointment: {
+            id: string;
+            start_at: string;
+            end_at: string;
+            bay_name: string;
+            problem_description: string | null;
+        };
+        OrderAssignedNotification: {
+            id: string;
+            read_at: string | null;
+            created_at: string;
+            type: "ORDER_ASSIGNED";
+            payload: components["schemas"]["OrderAssignedPayload"];
+        };
+        OrderAssignedPayload: {
+            order_id: string;
+            order_number: number;
+            workshop_id: string;
+            vehicle: string;
+            assigned_by: string;
+        };
+        OrderBoard: {
+            items: components["schemas"]["StaffOrderSummary"][];
+            closed_since: string;
+        };
+        OrderClient: {
+            id: string;
+            full_name: string;
+            email: string;
+            phone: string | null;
+        };
+        OrderHistoryEntry: {
+            id: string;
+            from_status: components["schemas"]["OrderStatus"] | null;
+            to_status: components["schemas"]["OrderStatus"];
+            changed_at: string;
+            note: string | null;
+            changed_by: components["schemas"]["OrderPerson"] | null;
+        };
+        OrderPerson: {
+            id: string;
+            full_name: string;
+        };
+        OrderScope: "active" | "closed";
+        OrderServiceType: {
+            id: string;
+            name: string;
+            duration_minutes: number;
+        };
+        OrderSortField: "number" | "created_at" | "status_changed_at";
+        OrderStatus: "RECEIVED" | "DIAGNOSIS" | "WAITING_FOR_APPROVAL" | "WAITING_FOR_PARTS" | "IN_PROGRESS" | "READY" | "COMPLETED" | "CANCELLED";
+        OrderStatusChange: {
+            status: components["schemas"]["OrderStatus"];
+            expected_status: components["schemas"]["OrderStatus"];
+            note?: string | null;
+        };
+        OrderStatusChangedNotification: {
+            id: string;
+            read_at: string | null;
+            created_at: string;
+            type: "ORDER_STATUS_CHANGED";
+            payload: components["schemas"]["OrderStatusChangedPayload"];
+        };
+        OrderStatusChangedPayload: {
+            order_id: string;
+            order_number: number;
+            workshop_name: string;
+            vehicle: string;
+            from_status: components["schemas"]["OrderStatus"] | null;
+            to_status: components["schemas"]["OrderStatus"];
+        };
         Page_AppointmentRead_: {
             items: components["schemas"]["AppointmentRead"][];
+            total: number;
+            limit: number;
+            offset: number;
+        };
+        Page_ClientOrderRead_: {
+            items: components["schemas"]["ClientOrderRead"][];
+            total: number;
+            limit: number;
+            offset: number;
+        };
+        Page_StaffOrderSummary_: {
+            items: components["schemas"]["StaffOrderSummary"][];
             total: number;
             limit: number;
             offset: number;
@@ -782,6 +1142,10 @@ export interface components {
         };
         PasswordResetRequest: {
             email: string;
+        };
+        RealtimeTicketRead: {
+            ticket: string;
+            expires_in_seconds: number;
         };
         RegisterRequest: {
             email: string;
@@ -827,7 +1191,43 @@ export interface components {
             service_type: components["schemas"]["ServiceTypeRead"];
             vehicle: components["schemas"]["AppointmentVehicle"];
             bay: components["schemas"]["AppointmentBay"];
+            order: components["schemas"]["AppointmentOrder"] | null;
             client: components["schemas"]["AppointmentClient"];
+        };
+        StaffOrderDetail: {
+            id: string;
+            number: number;
+            status: components["schemas"]["OrderStatus"];
+            status_changed_at: string;
+            created_at: string;
+            closed_at: string | null;
+            has_diagnosis: boolean;
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            client: components["schemas"]["OrderClient"];
+            service: components["schemas"]["OrderServiceType"];
+            mechanic: components["schemas"]["OrderPerson"] | null;
+            appointment: components["schemas"]["OrderAppointment"];
+            allowed_transitions: components["schemas"]["OrderStatus"][];
+            diagnosis: string | null;
+            history: components["schemas"]["OrderHistoryEntry"][];
+        };
+        StaffOrderSummary: {
+            id: string;
+            number: number;
+            status: components["schemas"]["OrderStatus"];
+            status_changed_at: string;
+            created_at: string;
+            closed_at: string | null;
+            has_diagnosis: boolean;
+            vehicle: components["schemas"]["AppointmentVehicle"];
+            client: components["schemas"]["OrderClient"];
+            service: components["schemas"]["OrderServiceType"];
+            mechanic: components["schemas"]["OrderPerson"] | null;
+            appointment: components["schemas"]["OrderAppointment"];
+            allowed_transitions: components["schemas"]["OrderStatus"][];
+        };
+        UnreadNotificationCount: {
+            unread_count: number;
         };
         UserProfileUpdate: {
             full_name?: string | null;
@@ -2686,6 +3086,761 @@ export interface operations {
                 };
             };
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_order_board_api_v1_workshops__workshop_id__orders_board_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderBoard"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_workshop_orders_api_v1_workshops__workshop_id__orders_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["OrderStatus"][] | null;
+                mechanic_id?: string | null;
+                unassigned?: boolean;
+                sort_by?: components["schemas"]["OrderSortField"];
+                sort_order?: components["schemas"]["SortOrder"];
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_StaffOrderSummary_"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_workshop_order_api_v1_workshops__workshop_id__orders__order_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    change_order_status_api_v1_workshops__workshop_id__orders__order_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderStatusChange"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_order_diagnosis_api_v1_workshops__workshop_id__orders__order_id__diagnosis_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DiagnosisUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    assign_order_mechanic_api_v1_workshops__workshop_id__orders__order_id__mechanic_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MechanicAssignment"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    claim_order_api_v1_workshops__workshop_id__orders__order_id__claim_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+                workshop_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_my_orders_api_v1_orders_mine_get: {
+        parameters: {
+            query?: {
+                scope?: components["schemas"]["OrderScope"];
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_ClientOrderRead_"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_my_order_api_v1_orders__order_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                order_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientOrderDetail"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_notifications_api_v1_notifications_get: {
+        parameters: {
+            query?: {
+                unread_only?: boolean;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPage"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    count_unread_notifications_api_v1_notifications_unread_count_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadNotificationCount"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mark_notification_read_api_v1_notifications__notification_id__read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderStatusChangedNotification"] | components["schemas"]["OrderAssignedNotification"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    mark_all_notifications_read_api_v1_notifications_read_all_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_realtime_ticket_api_v1_realtime_tickets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RealtimeTicketRead"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

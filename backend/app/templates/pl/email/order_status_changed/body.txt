@@ -1,0 +1,12 @@
+{% import "order_status.txt" as order_status -%}
+Cześć {{ full_name }},
+
+{{ order_status.message(status) }}
+
+Zlecenie: nr {{ order_number }}
+Status: {{ order_status.label(status) }}
+Usługa: {{ service_name }}
+Pojazd: {{ vehicle }}
+Warsztat: {{ workshop_name }}, tel. {{ workshop_phone }}
+
+Zespół AutoServis

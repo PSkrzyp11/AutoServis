@@ -474,18 +474,23 @@ async def test_staff_status_transitions(
     token = await login(client, manager.email)
     base_url = f"/api/v1/workshops/{setup.workshop.id}/appointments"
     future = await insert_appointment(db_session, setup, utc_now() + timedelta(days=2))
+    later = await insert_appointment(db_session, setup, utc_now() + timedelta(days=3))
     started = await insert_appointment(db_session, setup, utc_now() - timedelta(hours=3))
 
     early_no_show = await client.post(f"{base_url}/{future.id}/no-show", headers=bearer(token))
     checked_in = await client.post(f"{base_url}/{future.id}/check-in", headers=bearer(token))
-    cancelled = await client.post(f"{base_url}/{future.id}/cancel", headers=bearer(token))
-    after_cancel = await client.post(f"{base_url}/{future.id}/check-in", headers=bearer(token))
+    cancel_checked_in = await client.post(f"{base_url}/{future.id}/cancel", headers=bearer(token))
+    cancelled = await client.post(f"{base_url}/{later.id}/cancel", headers=bearer(token))
+    after_cancel = await client.post(f"{base_url}/{later.id}/check-in", headers=bearer(token))
     no_show = await client.post(f"{base_url}/{started.id}/no-show", headers=bearer(token))
     unknown = await client.post(f"{base_url}/{uuid.uuid4()}/check-in", headers=bearer(token))
 
     assert early_no_show.json()["error"]["details"]["reason"] == "appointment_not_started"
     assert checked_in.json()["status"] == "CHECKED_IN"
+    assert checked_in.json()["order"]["status"] == "RECEIVED"
+    assert cancel_checked_in.json()["error"]["code"] == "INVALID_STATUS_TRANSITION"
     assert cancelled.json()["status"] == "CANCELLED"
+    assert cancelled.json()["order"] is None
     assert after_cancel.json()["error"]["code"] == "INVALID_STATUS_TRANSITION"
     assert no_show.json()["status"] == "NO_SHOW"
     assert unknown.status_code == status.HTTP_404_NOT_FOUND

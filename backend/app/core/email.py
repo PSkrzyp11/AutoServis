@@ -18,6 +18,7 @@ class EmailTemplate(StrEnum):
     PASSWORD_RESET = "password_reset"
     APPOINTMENT_CONFIRMATION = "appointment_confirmation"
     APPOINTMENT_REMINDER = "appointment_reminder"
+    ORDER_STATUS_CHANGED = "order_status_changed"
 
 
 @dataclass(frozen=True)

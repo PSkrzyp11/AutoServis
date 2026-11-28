@@ -16,6 +16,7 @@ from app.models.vehicle import Vehicle
 from app.models.workshop import Workshop
 from app.schemas.appointment import AppointmentCreate
 from app.services.appointment_service import AppointmentService
+from app.services.outbox import Outbox
 from tests.factories import (
     create_bay,
     create_service_type,
@@ -24,7 +25,7 @@ from tests.factories import (
     create_workshop,
     open_every_day,
 )
-from tests.fakes import FakeTaskQueue
+from tests.fakes import FakeEventPublisher, FakeTaskQueue
 
 WARSAW = ZoneInfo("Europe/Warsaw")
 CLEANUP_STATEMENT = text("TRUNCATE users, workshops RESTART IDENTITY CASCADE")
@@ -68,7 +69,9 @@ async def book_in_own_session(
     payload: AppointmentCreate,
 ) -> str:
     async with session_factory() as session:
-        service = AppointmentService(session, settings, FakeTaskQueue())
+        task_queue = FakeTaskQueue()
+        outbox = Outbox(FakeEventPublisher(), task_queue)
+        service = AppointmentService(session, settings, task_queue, outbox)
         try:
             await service.book(client, payload)
         except AppError as error:
